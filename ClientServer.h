@@ -27,6 +27,7 @@ private:
     socklen_t s_in_size;
     char servName[INET6_ADDRSTRLEN];
     char message[100];
+    int mLength; //length of the message
 
 public:
     Server();

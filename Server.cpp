@@ -19,6 +19,7 @@ void Server::setMessage(char mess[], int length) {
     for(int i = length; i < 100; i++) {
         message[i] = '\0';
     }
+    mLength = length;
 }
 
 bool Server::setup() {
@@ -84,7 +85,7 @@ bool Server::sendMessage() {
     }
     if(!fork()) {
         close(sockID);
-        if(send(conID,message,13,0) == -1) {
+        if(send(conID,message,mLength,0) == -1) {
             perror("send");
             return false;
         }
