@@ -28,16 +28,6 @@ Project File Date:  05/09/2021
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'can'
 Note: source file '../Src/system_stm32f4xx.c' - object file renamed from 'can\system_stm32f4xx.o' to 'can\system_stm32f4xx_1.o'.
-compiling turret.c...
-../Inc/pid.h(35): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Inc/turret.h(27): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\Src\turret.c(17): warning:  #223-D: function "radiansToValue14Bit" declared implicitly
-      turret.yaw = radiansToValue14Bit(calculateProportional(yawPosition, yawAngle, yawProfile));
-..\Src\turret.c(21): warning:  #1-D: last line of file ends without a newline
-  }
-..\Src\turret.c: 4 warnings, 0 errors
 compiling main.c...
 ../Inc/chassis.h(26): warning:  #1-D: last line of file ends without a newline
   #endif
@@ -45,11 +35,15 @@ compiling main.c...
   #endif
 ../Inc/turret.h(27): warning:  #1-D: last line of file ends without a newline
   #endif
-../Src/main.c: 3 warnings, 0 errors
+../Src/main.c(90): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      Turret turret = calculateTurret(xThrottle * 2 * 3.14159 * 5 / 16384.0, yThrottle * 2 * 3.14159 * 5 / 16384.0);
+../Src/main.c(90): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+      Turret turret = calculateTurret(xThrottle * 2 * 3.14159 * 5 / 16384.0, yThrottle * 2 * 3.14159 * 5 / 16384.0);
+../Src/main.c: 5 warnings, 0 errors
 linking...
-Program Size: Code=12118 RO-data=458 RW-data=44 ZI-data=2252  
+Program Size: Code=12302 RO-data=458 RW-data=44 ZI-data=2284  
 FromELF: creating hex file...
-"can\can.axf" - 0 Error(s), 7 Warning(s).
+"can\can.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 

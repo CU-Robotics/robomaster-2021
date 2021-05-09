@@ -82,13 +82,15 @@ int main(void) {
 		//HAL_Delay(1000);
 
     //if (local_rc_ctrl->rc.s[0]) {
-    float xThrottle = (local_rc_ctrl->rc.ch[0] * 10 / 16384.0);
-    float yThrottle = (local_rc_ctrl->rc.ch[1] * 10 / 16384.0);
-    float rotation = (local_rc_ctrl->rc.ch[2] * 10 / 16384.0);
+    float xThrottle = (local_rc_ctrl->rc.ch[2] * 10 / 16384.0);
+    float yThrottle = (local_rc_ctrl->rc.ch[3] * 10 / 16384.0);
+    float rotation = (local_rc_ctrl->rc.ch[1] * 10 / 16384.0);
 
-    Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
+    //Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
+    Turret turret = calculateTurret(xThrottle * 2 * 3.14159 * 5 / 16384.0, yThrottle * 2 * 3.14159 * 5 / 16384.0);
 
-    CAN_cmd_chassis((int16_t) (chassis.frontRight * 16384), (int16_t) (chassis.backRight * 16384), (int16_t) (chassis.backLeft * 16384), (int16_t) (chassis.frontLeft * 16384));
+    //CAN_cmd_chassis((int16_t) (chassis.frontRight * 16384), (int16_t) (chassis.backRight * 16384), (int16_t) (chassis.backLeft * 16384), (int16_t) (chassis.frontLeft * 16384));
+    CAN_cmd_gimbal((int16_t) (turret.yaw), 0, 0, 0);//(int16_t) (turret.pitch));
 	}
 }
 
