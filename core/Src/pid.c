@@ -9,17 +9,17 @@ float calculateProportional(int currentPosition, int setpoint, PIDProfile profil
 }
 
 float value14BitToRadians(int angle) {
-    return 2 * M_PI * angle / 16384.0;
+    return 2 * 3.14159 * angle / 16384.0;
 }
 
 int radiansToValue14Bit(float angle) {
-    return (int) (16384 * angle / (2 * M_PI));
+    return (int) (16384 * angle / (2 * 3.14159));
 }
 
 float value16BitToRadians(int angle) {
-    return 2 * M_PI * angle / 65536.0;
+    return 2 * 3.14159 * angle / 65536.0;
 }
 
 int radiansToValue16Bit(float angle) {
-    return (int) (65536 * angle / (2 * M_PI));
+    return (int) (65536 * angle / (2 * 3.14159));
 }

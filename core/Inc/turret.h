@@ -1,5 +1,5 @@
-#ifndef __subsystems_chassis_H
-#define __subsystems_chassis_H
+#ifndef __turret_H
+#define __turret_H
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -9,15 +9,13 @@
 
 
 // PID Profiles containing tuning parameters.
-PIDProfile yawProfile;
-PIDProfile pitchProfile;
 
 // Stores power values for the two turret motors.
 // Turret motor IDs are permanently set to 5 and 6, yaw and pitch respectively.
-struct Turret {
+typedef struct {
    float yaw; // ID 5
    float pitch; // ID 6
-};
+} Turret;
 
 // Calculates turret output state from desired pitch and yaw angles
 Turret calculateTurret(float yawAngle, float pitchAngle);
