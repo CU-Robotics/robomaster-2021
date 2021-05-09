@@ -1,4 +1,3 @@
-/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.c
@@ -16,7 +15,6 @@
   *
   ******************************************************************************
   */
-/* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -26,74 +24,32 @@
 #include "usart.h"
 #include "math.h"
 
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
 #include "remote_control.h"
 #include "bsp_usart.h"
 #include "bsp_can.h"
 #include "CAN_receive.h"
-/* USER CODE END Includes */
 
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
-
-/* USER CODE END PTD */
-
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
-
-/* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
+#include "chassis.h"
+#include "turret.h"
+#include "pid.h"
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-/* USER CODE BEGIN PFP */
 
 const RC_ctrl_t *local_rc_ctrl;
-
-/* USER CODE END PFP */
-
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
   * @retval int
   */
-int main(void)
-{
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-  
-
+int main(void) {
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
   /* Configure the system clock */
   SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
@@ -102,18 +58,14 @@ int main(void)
 	MX_DMA_Init();
 	MX_USART1_UART_Init();
   MX_USART3_UART_Init();
-  /* USER CODE BEGIN 2 */
+
 	can_filter_init();
-	/* USER CODE END 2 */
 
-
-	/* USER CODE BEGIN 2 */
 	remote_control_init();
 	usart1_tx_dma_init();
 	local_rc_ctrl = get_remote_control_point();
 
   /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
   while (1) {
     /* USER CODE END WHILE */
 
@@ -129,36 +81,15 @@ int main(void)
 		printf("print");*/
 		//HAL_Delay(1000);
 
-		// Step 1: Split the desired velocity vector (magnitude and direction) into it's x and y components
-		float xThrottle = (local_rc_ctrl->rc.ch[0] / 16384.0);
-		float yThrottle = (local_rc_ctrl->rc.ch[1] / 16384.0);
-		float rotation = (local_rc_ctrl->rc.ch[2] / 16384.0);
+    //if (local_rc_ctrl->rc.s[0]) {
+    float xThrottle = (local_rc_ctrl->rc.ch[0] * 10 / 16384.0);
+    float yThrottle = (local_rc_ctrl->rc.ch[1] * 10 / 16384.0);
+    float rotation = (local_rc_ctrl->rc.ch[2] * 10 / 16384.0);
 
-		// Step 2: Calculate the power for each wheel (on a scale of -1.0 to 1.0)
-		float frontRight = xThrottle - yThrottle - rotation;
-		float frontLeft = xThrottle + yThrottle + rotation;
-		float backRight = xThrottle + yThrottle - rotation;
-		float backLeft = xThrottle - yThrottle + rotation;
+    Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
 
-		// Step 3: Normalize motor power (due to the previous step, some of the motor power variables may have a value higher than 1.0 or lower than -1.0)
-
-		// Find the highest magnitude (max) value in the four power variables.
-		float max = abs(frontRight);
-		if (abs(frontLeft) > max) max = abs(frontLeft);
-		if (abs(backRight) > max) max = abs(backRight);
-		if (abs(backLeft) > max) max = abs(backLeft);
-
-		// If the max value is greater than 1.0, divide all the motor power variables by the max value, forcing all magnitudes to be less than or equal to 1.0.
-		if (max > 1.0) {
-				frontRight /= max;
-				frontLeft /= max;
-				backRight /= max;
-				backLeft /= max;
-		}
-
-		CAN_cmd_chassis((int16_t) (frontRight * 16384), (int16_t) (backRight * 16384), (int16_t) (backLeft * 16384), (int16_t) (frontLeft * 16384));
+    CAN_cmd_chassis((int16_t) (chassis.frontRight * 16384), (int16_t) (chassis.backRight * 16384), (int16_t) (chassis.backLeft * 16384), (int16_t) (chassis.frontLeft * 16384));
 	}
-  /* USER CODE END 3 */
 }
 
 /**
@@ -178,7 +109,7 @@ void SystemClock_Config(void)
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;Z
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 6;
   RCC_OscInitStruct.PLL.PLLN = 168;
