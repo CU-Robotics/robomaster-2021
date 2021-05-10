@@ -5,9 +5,9 @@
 float calculateProportional(float currentPosition, float setpoint, PIDProfile profile) {
     // Calculate error
     float error = setpoint - currentPosition;
-    float error2 = M_ENCODER_GM6020_SCALE - error;
+    float error2 = M_ENCODER_GM6020_SCALE + error;
 	
-		if(error2 > error){
+		if(abs(error2) < abs(error)){
 			error = error2;
 		}
     // Calculate correction and return
