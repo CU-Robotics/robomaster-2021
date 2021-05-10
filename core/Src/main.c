@@ -73,8 +73,8 @@ int main(void) {
   while (1) {
     //if (local_rc_ctrl->rc.s[0]) {
     
-    chassisLoop(local_rc_ctrl);
-    //turretLoop(local_rc_ctrl);
+    //chassisLoop(local_rc_ctrl);
+    turretLoop(local_rc_ctrl);
 	}
 }
 
