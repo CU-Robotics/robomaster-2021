@@ -17,3 +17,9 @@ const float M_ENCODER_M3508_SCALE = 8191.0f;
 // GM6020 Motor
 const float M_MOTOR_GM6020_VOLTAGE_SCALE = 30000.0f;
 const float M_ENCODER_GM6020_SCALE = 8191.0f;
+
+//Snail Motor
+const float M_MOTOR_SNAIL_X = 3;
+const float M_MOTOR_SNAIL_Y = 2;
+const float M_MOTOR_SNAIL_Z = 1;
+const float M_MOTOR_SNAIL_MAX = 1873871092.0f;
