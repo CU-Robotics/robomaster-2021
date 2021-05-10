@@ -39,6 +39,7 @@ typedef enum
     CAN_PIT_MOTOR_ID = 0x206,
     CAN_TRIGGER_MOTOR_ID = 0x207,
     CAN_GIMBAL_ALL_ID = 0x1FF,
+		CAN_CHASSIS_ALL_ID2 = 0x1FF
 
 } can_msg_id_e;
 
@@ -83,6 +84,8 @@ extern void CAN_cmd_gimbal(int16_t yaw, int16_t pitch, int16_t shoot, int16_t re
   */
 extern void CAN_cmd_chassis_reset_ID(void);
 
+void CAN_cmd_gimbal_working(int16_t yaw, int16_t pitch, int16_t shoot, int16_t rev);
+	
 /**
   * @brief          send control current of motor (0x201, 0x202, 0x203, 0x204)
   * @param[in]      motor1: (0x201) 3508 motor control current, range [-16384,16384] 
