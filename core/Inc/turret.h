@@ -17,8 +17,8 @@ typedef struct {
    float pitch; // ID 6
 } Turret;
 
-// Calculates turret output state from desired pitch and yaw angles
-Turret calculateTurret(float yawAngle, float pitchAngle);
+// Calculates turret output state from desired pitch and yaw angles in radians
+Turret calculateTurret(int16_t yawAngle, int16_t pitchAngle);
 
 
 #ifdef __cplusplus

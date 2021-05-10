@@ -65,6 +65,9 @@ int main(void) {
 	usart1_tx_dma_init();
 	local_rc_ctrl = get_remote_control_point();
 
+	float yawHoldPosition = 0;
+	float pitchHoldPosition = 0;
+
   /* Infinite loop */
   while (1) {
     /* USER CODE END WHILE */
@@ -86,11 +89,26 @@ int main(void) {
     float yThrottle = (local_rc_ctrl->rc.ch[3] * 10 / 16384.0);
     float rotation = (local_rc_ctrl->rc.ch[1] * 10 / 16384.0);
 
-    //Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
-    Turret turret = calculateTurret(xThrottle * 2 * 3.14159 * 5 / 16384.0, yThrottle * 2 * 3.14159 * 5 / 16384.0);
+		//
+    yawHoldPosition += ((local_rc_ctrl->rc.ch[2])/10000.0f);
+		//create true yaw around circle
+		/*
+		if(yawHoldPosition > 8194)
+			yawHoldPosition = 0 ;
+		if(yawHoldPosition < 0)
+			yawHoldPosition = 8194;
+		*/
+    pitchHoldPosition += ((local_rc_ctrl->rc.ch[3])/10000.0f);
+		if(pitchHoldPosition > 8191)
+			pitchHoldPosition -= 8191;
+		if(pitchHoldPosition < 0)
+			pitchHoldPosition += 8191;
+		
+    Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
+    Turret turret = calculateTurret((int16_t) yawHoldPosition, (int16_t) pitchHoldPosition);
 
     //CAN_cmd_chassis((int16_t) (chassis.frontRight * 16384), (int16_t) (chassis.backRight * 16384), (int16_t) (chassis.backLeft * 16384), (int16_t) (chassis.frontLeft * 16384));
-    CAN_cmd_gimbal((int16_t) (turret.yaw), 0, 0, 0);//(int16_t) (turret.pitch));
+    CAN_cmd_gimbal_working((int16_t) (turret.yaw), (int16_t) (turret.pitch), 0, 0);//(int16_t) (turret.pitch));
 	}
 }
 

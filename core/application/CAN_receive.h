@@ -28,17 +28,20 @@
 /* CAN send and receive ID */
 typedef enum
 {
-    CAN_CHASSIS_ALL_ID = 0x200,
+    CAN_CHASSIS_ALL_ID = 0x200, //0x200 is default
     CAN_3508_M1_ID = 0x201,
     CAN_3508_M2_ID = 0x202,
 
     CAN_3508_M3_ID = 0x203,
     CAN_3508_M4_ID = 0x204,
 
-    CAN_YAW_MOTOR_ID = 0x205,
-    CAN_PIT_MOTOR_ID = 0x206,
+    CAN_YAW_MOTOR_ID = 0x205, //0x205 is default
+    CAN_PIT_MOTOR_ID = 0x206, //0x206 is default
     CAN_TRIGGER_MOTOR_ID = 0x207,
-    CAN_GIMBAL_ALL_ID = 0x1FF,
+    CAN_GIMBAL_ALL_ID = 0x1FF, //0x1FF is default
+	
+	
+    CAN_CHASSIS_ALL_ID2 = 0x1FF, //
 
 } can_msg_id_e;
 
@@ -100,6 +103,9 @@ extern void CAN_cmd_chassis_reset_ID(void);
   * @retval         none
   */
 extern void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t motor4);
+
+//gimbal controller for CU rm2021
+extern void CAN_cmd_gimbal_working(int16_t yaw, int16_t pitch, int16_t shoot, int16_t rev);
 
 /**
   * @brief          return the yaw 6020 motor data point

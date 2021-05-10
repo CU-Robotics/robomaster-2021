@@ -6,16 +6,22 @@
 PIDProfile yawProfile;
 PIDProfile pitchProfile;
 
-Turret calculateTurret(float yawAngle, float pitchAngle) {
-		yawProfile.kP = 1 / (4 * 3.14159);
-		pitchProfile.kP = 1 / (4 * 3.14159);
+extern CAN_HandleTypeDef hcan1;
+extern CAN_HandleTypeDef hcan2;
+
+Turret calculateTurret(int16_t yawAngle, int16_t pitchAngle) {
+		yawProfile.kP = 0.5;
+		yawProfile.kF = 0;
+		pitchProfile.kP = 0;
+		pitchProfile.kF = 0;
+
 	
-    float yawPosition = value16BitToRadians(get_yaw_gimbal_motor_measure_point()->ecd);
-    float pitchPosition = value16BitToRadians(get_yaw_gimbal_motor_measure_point()->ecd);
+    int16_t yawPosition = get_pitch_gimbal_motor_measure_point()->ecd;
+    int16_t pitchPosition = get_yaw_gimbal_motor_measure_point()->ecd;
 
     Turret turret;
-    turret.yaw = radiansToValue14Bit(calculateProportional(yawPosition, yawAngle, yawProfile));
-    turret.pitch = radiansToValue14Bit(calculateProportional(pitchPosition, pitchAngle, pitchProfile));
+    turret.yaw = calculateProportional(yawPosition, yawAngle, yawProfile);
+    turret.pitch = calculateProportional(pitchPosition, pitchAngle, pitchProfile);
 
     return turret;
 }
