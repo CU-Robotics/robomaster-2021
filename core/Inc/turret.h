@@ -4,6 +4,12 @@
  extern "C" {
 #endif
 
+#include "dma.h"
+#include "usart.h"
+#include "remote_control.h"
+#include "can.h"
+#include "CAN_receive.h"
+
 #include "main.h"
 #include "pid.h"
 
@@ -15,14 +21,11 @@ typedef struct {
    float pitch; // ID 6
 } Turret;
 
-PIDProfile yawProfile;
-PIDProfile pitchProfile;
-
 void turretInit();
 void turretLoop();
 
 // Calculates turret output state from desired pitch and yaw angles
-Turret calculateTurret(float yawAngle, float pitchAngle);
+Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile);
 
 
 #ifdef __cplusplus

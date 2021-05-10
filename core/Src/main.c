@@ -73,8 +73,8 @@ int main(void) {
   while (1) {
     //if (local_rc_ctrl->rc.s[0]) {
     
-    chassisLoop();
-    //turretLoop();
+    chassisLoop(local_rc_ctrl);
+    //turretLoop(local_rc_ctrl);
 	}
 }
 
@@ -95,7 +95,7 @@ void SystemClock_Config(void)
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;Z
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 6;
   RCC_OscInitStruct.PLL.PLLN = 168;

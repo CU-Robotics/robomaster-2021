@@ -10,10 +10,10 @@
 // Stores power values for the four chassis motors.
 // Chassis motor IDs are permanently set to 1-4, starting with the front right motor and going clockwise.
 typedef struct {
-   float kP = 0.0;
-   float kI = 0.0;
-   float kD = 0.0;
-   float kF = 0.0;
+   float kP;
+   float kI;
+   float kD;
+   float kF;
 } PIDProfile;
 
 typedef struct {

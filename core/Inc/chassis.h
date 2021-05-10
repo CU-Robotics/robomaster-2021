@@ -4,6 +4,12 @@
  extern "C" {
 #endif
 
+#include "dma.h"
+#include "usart.h"
+#include "remote_control.h"
+#include "can.h"
+#include "CAN_receive.h"
+
 #include "main.h"
 
 

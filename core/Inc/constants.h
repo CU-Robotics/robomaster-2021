@@ -11,7 +11,7 @@ extern const float M_PI;
 
 // Controller
 extern const float M_CONTROLLER_JOYSTICK_SCALE;
-extern const int[] M_CONTROLLER_SWITCH_STATES;
+extern const int M_CONTROLLER_SWITCH_STATES[];
 extern const int M_CONTROLLER_X_AXIS;
 extern const int M_CONTROLLER_Y_AXIS;
 extern const int M_CONTROLLER_ROTATION_AXIS;

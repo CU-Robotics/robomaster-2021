@@ -42,3 +42,6 @@ can\main.o: ..\bsp\boards\struct_typedef.h
 can\main.o: ..\bsp\boards\bsp_usart.h
 can\main.o: ..\bsp\boards\bsp_can.h
 can\main.o: ..\application\CAN_receive.h
+can\main.o: ../Inc/chassis.h
+can\main.o: ../Inc/turret.h
+can\main.o: ../Inc/pid.h

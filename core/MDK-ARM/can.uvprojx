@@ -428,6 +428,26 @@
               <FileType>1</FileType>
               <FilePath>..\Src\usart.c</FilePath>
             </File>
+            <File>
+              <FileName>turret.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\turret.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>constants.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\constants.c</FilePath>
+            </File>
+            <File>
+              <FileName>chassis.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\chassis.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -584,5 +604,14 @@
     </components>
     <files/>
   </RTE>
+
+  <LayerInfo>
+    <Layers>
+      <Layer>
+        <LayName>can</LayName>
+        <LayPrjMark>1</LayPrjMark>
+      </Layer>
+    </Layers>
+  </LayerInfo>
 
 </Project>

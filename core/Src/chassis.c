@@ -10,13 +10,13 @@
 
 
 void chassisInit() {
-    
+
 }
 
-void chassisLoop() {
-	float xThrottle = (local_rc_ctrl->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
-    float yThrottle = (local_rc_ctrl->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
-    float rotation = (local_rc_ctrl->rc.ch[M_CONTROLLER_ROTATION_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+void chassisLoop(RC_ctrl_t* control_input) {
+	float xThrottle = (control_input->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+    float yThrottle = (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+    float rotation = (control_input->rc.ch[M_CONTROLLER_ROTATION_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
 
     Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
 
