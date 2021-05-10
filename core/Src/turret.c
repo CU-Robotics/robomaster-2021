@@ -25,7 +25,7 @@ void turretLoop(RC_ctrl_t* control_input) {
 
     Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile);
 
-    CAN_cmd_gimbal(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
+    CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
 }
 
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile) {
