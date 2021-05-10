@@ -15,8 +15,8 @@ PIDProfile pitchProfile;
 
 void turretInit() {
     // PID Profiles containing tuning parameters.
-    yawProfile.kP = 1 / (2 * M_PI);
-    pitchProfile.kP = 1 / (2 * M_PI);
+    yawProfile.kP = 1.0f / (8 * M_PI);
+    pitchProfile.kP = 1.0f / (8 * M_PI);
 }
 
 void turretLoop(RC_ctrl_t* control_input) {
@@ -25,17 +25,17 @@ void turretLoop(RC_ctrl_t* control_input) {
 
     Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile);
 
-    //CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
+    CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
 }
 
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile) {
     float ecdVal = get_yaw_gimbal_motor_measure_point()->ecd;
-    float yawPosition = abs(2.0 * M_PI * (get_yaw_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE));
-    float pitchPosition = abs(2.0 * M_PI * (get_pitch_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE));
+    float yawPosition = 2.0 * M_PI * (get_yaw_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE);
+    float pitchPosition = 2.0 * M_PI * (get_pitch_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE);
 
     Turret turret;
     turret.yaw = calculateProportional(yawPosition, yawAngle, yawPIDProfile);
-    turret.pitch = calculateProportional(pitchPosition, pitchAngle, pitchPIDProfile);
+    //turret.pitch = calculateProportional(pitchPosition, pitchAngle, pitchPIDProfile);
 
     return turret;
 }
