@@ -5,5 +5,5 @@ float calculateProportional(float currentPosition, float setpoint, PIDProfile pr
     // Calculate error
     float error = setpoint - currentPosition;
     // Calculate correction and return
-    return error * 3.14 + profile.kF;
+    return error * profile.kP + profile.kF;
 }

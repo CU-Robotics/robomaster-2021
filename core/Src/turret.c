@@ -20,8 +20,8 @@ void turretInit() {
 }
 
 void turretLoop(RC_ctrl_t* control_input) {
-    float yawSetpoint = (control_input->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE) * 2 * M_PI;
-    float pitchSetpoint = (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE) * 2 * M_PI;
+    float yawSetpoint = (control_input->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE) * 2.0 * M_PI;
+    float pitchSetpoint = (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE) * 2.0 * M_PI;
 
     Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile);
 
@@ -29,8 +29,8 @@ void turretLoop(RC_ctrl_t* control_input) {
 }
 
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile) {
-    float yawPosition = 2 * M_PI * get_yaw_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE;
-    float pitchPosition = 2 * M_PI * get_pitch_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE;
+    float yawPosition = 2.0 * M_PI * get_yaw_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE;
+    float pitchPosition = 2.0 * M_PI * get_pitch_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE;
 
     Turret turret;
     turret.yaw = calculateProportional(yawPosition, yawAngle, yawPIDProfile);
