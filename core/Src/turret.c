@@ -15,13 +15,13 @@ PIDProfile pitchProfile;
 
 void turretInit() {
     // PID Profiles containing tuning parameters.
-    yawProfile.kP = 10 / (2 * M_PI);
-    pitchProfile.kP = 10 / (2 * M_PI);
+    yawProfile.kP = 1 / (2 * M_PI);
+    pitchProfile.kP = 1 / (2 * M_PI);
 }
 
 void turretLoop(RC_ctrl_t* control_input) {
-    float yawSetpoint = (control_input->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE) * M_PI;
-    float pitchSetpoint = (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE) * M_PI;
+    float yawSetpoint = (control_input->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE) * 2 * M_PI;
+    float pitchSetpoint = (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE) * 2 * M_PI;
 
     Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile);
 
