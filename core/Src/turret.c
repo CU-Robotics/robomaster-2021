@@ -29,12 +29,12 @@ void turretLoop(RC_ctrl_t* control_input) {
 }
 
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile) {
-    float yawPosition = get_yaw_gimbal_motor_measure_point()->ecd;
-    float pitchPosition = get_pitch_gimbal_motor_measure_point()->ecd;
+    float yawPosition = 2 * M_PI * get_yaw_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE;
+    float pitchPosition = 2 * M_PI * get_pitch_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE;
 
     Turret turret;
-    turret.yaw = calculateProportional(yawPosition, M_PI, yawPIDProfile);
-    turret.pitch = calculateProportional(pitchPosition, M_PI, pitchPIDProfile);
+    turret.yaw = calculateProportional(yawPosition, yawAngle, yawPIDProfile);
+    turret.pitch = calculateProportional(pitchPosition, pitchAngle, pitchPIDProfile);
 
     return turret;
 }
