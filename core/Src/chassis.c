@@ -38,9 +38,9 @@ Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottl
 
 	// If the max value is greater than 1.0, divide all the motor power variables by the max value, forcing all magnitudes to be less than or equal to 1.0.
 	if (max > 1.0) {
-		frontRight /= max;
+		frontRight /= -max;
 		frontLeft /= max;
-		backRight /= max;
+		backRight /= -max;
 		backLeft /= max;
 	}
 
