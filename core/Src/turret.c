@@ -34,7 +34,7 @@ Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfil
     float pitchPosition = 2.0 * M_PI * (get_pitch_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE);
 
     Turret turret;
-    turret.yaw = calculateProportional(yawPosition, yawAngle, yawPIDProfile);
+    turret.yaw = calculateProportional(0, yawAngle, yawPIDProfile);
     //turret.pitch = calculateProportional(pitchPosition, pitchAngle, pitchPIDProfile);
 
     return turret;
