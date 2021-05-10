@@ -7,9 +7,16 @@ float calculateProportional(float currentPosition, float setpoint, PIDProfile pr
     float error = setpoint - currentPosition;
     float error2 = M_ENCODER_GM6020_SCALE + error;
 	
-		if(abs(error2) < abs(error)){
-			error = error2;
-		}
+    if (absValueFloat(error2) < absValueFloat(error)) {
+        error = error2;
+    }
     // Calculate correction and return
     return error * profile.kP + profile.kF;
+}
+
+float absValueFloat(float value) {
+    if (value < 0) {
+        return -value;
+    }
+    return value;
 }

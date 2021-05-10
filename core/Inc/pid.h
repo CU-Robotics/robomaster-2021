@@ -23,6 +23,8 @@ typedef struct {
 // Calculates mecanum drive output state from controller input
 float calculateProportional(float currentPosition, float setpoint, PIDProfile profile);
 
+float absValueFloat(float value);
+
 #ifdef __cplusplus
 }
 #endif
