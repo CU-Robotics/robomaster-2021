@@ -1,4 +1,4 @@
-## cu-robotics/robomaster-2021
+## CU Robotics 2021 Robomaster Control Code
 
 #### Description
 This repository contains CU Robotics' 2021 Control Code. Due to the coronavirus pandemic, only one robot (Infantry #1) was built for the 2021 season, so everything in this repository is specialized for the Infantry robot only.

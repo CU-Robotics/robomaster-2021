@@ -64,31 +64,17 @@ int main(void) {
 	remote_control_init();
 	usart1_tx_dma_init();
 	local_rc_ctrl = get_remote_control_point();
+  
+  /* Init functions */
+  chassisInit();
+  turretInit();
 
-  /* Infinite loop */
+  /* Loop functions */
   while (1) {
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-		//CAN_cmd_chassis(1000, 1000, 1000, 1000);
-		/*HAL_Delay(1000);
-		//CAN_cmd_gimbal(10000, 10000, 10000, 10000);
-		//HAL_Delay(1);
-		//CAN_cmd_chassis(-400,-400,-1000,-400);
-		// ecd is encoder position with 16 bit accuracy
-		int16_t var = get_chassis_motor_measure_point(2)->ecd;
-		printf("andle /d",var);
-		printf("print");*/
-		//HAL_Delay(1000);
-
     //if (local_rc_ctrl->rc.s[0]) {
-    float xThrottle = (local_rc_ctrl->rc.ch[0] * 10 / 16384.0);
-    float yThrottle = (local_rc_ctrl->rc.ch[1] * 10 / 16384.0);
-    float rotation = (local_rc_ctrl->rc.ch[2] * 10 / 16384.0);
-
-    Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
-
-    CAN_cmd_chassis((int16_t) (chassis.frontRight * 16384), (int16_t) (chassis.backRight * 16384), (int16_t) (chassis.backLeft * 16384), (int16_t) (chassis.frontLeft * 16384));
+    
+    chassisLoop();
+    //turretLoop();
 	}
 }
 
