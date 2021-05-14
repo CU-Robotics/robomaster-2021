@@ -20,7 +20,7 @@ void chassisLoop(RC_ctrl_t* control_input) {
 
     Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
 
-    CAN_cmd_chassis((int16_t) (chassis.frontRight * M_MOTOR_M3508_VOLTAGE_SCALE), (int16_t) (chassis.backRight * M_MOTOR_M3508_VOLTAGE_SCALE), (int16_t) (chassis.backLeft * M_MOTOR_M3508_VOLTAGE_SCALE), (int16_t) (chassis.frontLeft * M_MOTOR_M3508_VOLTAGE_SCALE));
+    CAN_cmd_chassis((int16_t) (chassis.frontRight), (int16_t) (chassis.backRight), (int16_t) (chassis.backLeft), (int16_t) (chassis.frontLeft));
 }
 
 Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottle) {
@@ -45,11 +45,12 @@ Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottl
 	}
 
 	// Invert right side to make "forward" consistent for all motors.
+	// Scales the values for the voltage, now ready for CAN transmition
 	Chassis chassis;
-	chassis.frontRight = -frontRight;
-	chassis.frontLeft = frontLeft;
-	chassis.backRight = -backRight;
-	chassis.backLeft = backLeft;
+	chassis.frontRight = -frontRight * M_MOTOR_M3508_CURRENT_SCALE;
+	chassis.frontLeft = frontLeft * M_MOTOR_M3508_CURRENT_SCALE;
+	chassis.backRight = -backRight * M_MOTOR_M3508_CURRENT_SCALE;
+	chassis.backLeft = backLeft * M_MOTOR_M3508_CURRENT_SCALE;
 
 	return chassis;
 }

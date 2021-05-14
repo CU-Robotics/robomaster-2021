@@ -13,13 +13,14 @@
 #include "main.h"
 
 
-// Stores power values for the four chassis motors.
+// Stores current values for the four chassis motors.
 // Chassis motor IDs are permanently set to 1-4, starting with the front right motor and going clockwise.
+// Use these values directly for commaning chassis
 typedef struct {
    float frontRight; // ID 1
-   float backRight; // ID 2
-   float backLeft; // ID 3
-   float frontLeft; // ID 4
+   float backRight;  // ID 2
+   float backLeft;   // ID 3
+   float frontLeft;  // ID 4
 } Chassis;
 
 void chassisInit();

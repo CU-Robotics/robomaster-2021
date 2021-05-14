@@ -31,15 +31,15 @@ void turretLoop(RC_ctrl_t* control_input) {
 
     if(switchValue == control_input->rc.s[M_MOTOR_SNAIL_Z]) {
         //if switchValue = 1, input max value to CAN_cmd
- CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, M_MOTOR_SNAIL_MAX, 0);
+ CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_CURRENT_SCALE, 0, M_MOTOR_SNAIL_MAX, 0);
         //else, call function with 0 as input value for snail motor
         else{
-             CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
+             CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_CURRENT_SCALE, 0, 0, 0);
         }
     }
 
 
-    CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
+    CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_CURRENT_SCALE, 0, 0, 0);
 }
 
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile) {
