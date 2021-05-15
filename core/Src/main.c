@@ -44,6 +44,9 @@ const RC_ctrl_t *local_rc_ctrl;
   * @brief  The application entry point.
   * @retval int
   */
+	
+	int counter = 0;
+	int tempECD = 0;
 int main(void) {
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -88,9 +91,12 @@ int main(void) {
   /* Loop functions */
   while (1) {
     //if (local_rc_ctrl->rc.s[0]) {
-    
+    //ourCan(&hcan1);
     //chassisLoop(local_rc_ctrl);
     turretLoop(local_rc_ctrl);
+		HAL_Delay(2);
+		
+		//counter++;
 	}
 }
 

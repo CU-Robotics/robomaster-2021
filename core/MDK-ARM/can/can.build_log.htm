@@ -28,7 +28,26 @@ Project File Date:  05/15/2021
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'can'
 Note: source file '../Src/system_stm32f4xx.c' - object file renamed from 'can\system_stm32f4xx.o' to 'can\system_stm32f4xx_1.o'.
-"can\can.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+../Inc/chassis.h(25): warning:  #1295-D: Deprecated declaration chassisInit - give arg types
+  void chassisInit();
+../Inc/chassis.h(26): warning:  #1295-D: Deprecated declaration chassisLoop - give arg types
+  void chassisLoop();
+../Inc/chassis.h(35): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Inc/pid.h(31): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Inc/turret.h(24): warning:  #1295-D: Deprecated declaration turretInit - give arg types
+  void turretInit();
+../Inc/turret.h(25): warning:  #1295-D: Deprecated declaration turretLoop - give arg types
+  void turretLoop();
+../Inc/turret.h(34): warning:  #1-D: last line of file ends without a newline
+  #endif
+../Src/main.c: 7 warnings, 0 errors
+linking...
+Program Size: Code=14992 RO-data=540 RW-data=64 ZI-data=2408  
+FromELF: creating hex file...
+"can\can.axf" - 0 Error(s), 7 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -51,7 +70,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.4.0
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

@@ -45,6 +45,8 @@ static uint8_t              gimbal_can_send_data[8];
 static CAN_TxHeaderTypeDef  chassis_tx_message;
 static uint8_t              chassis_can_send_data[8];
 
+		int yawCounter = 0;
+		int temprxData = 0;
 /**
   * @brief          hal CAN fifo call back, receive motor data
   * @param[in]      hcan, the point to CAN handle
@@ -62,27 +64,39 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
     HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &rx_header, rx_data);
 
-    switch (rx_header.StdId)
-    {
-        case CAN_3508_M1_ID:
-        case CAN_3508_M2_ID:
-        case CAN_3508_M3_ID:
-        case CAN_3508_M4_ID:
-        case CAN_YAW_MOTOR_ID:
-        case CAN_PIT_MOTOR_ID:
-        case CAN_TRIGGER_MOTOR_ID:
-        {
-            static uint8_t i = 0;
-            //get motor id
-            i = rx_header.StdId - CAN_3508_M1_ID;
-            get_motor_measure(&motor_chassis[i], rx_data);
-            break;
-        }
+      switch (rx_header.StdId) {
+    case CAN_3508_M1_ID:
+        // motor_Decode(&(can_devices_ptr->feeder_fb), rx_data);
+        get_motor_measure(&motor_chassis[0], rx_data);
+        break;
+		
+    case CAN_3508_M2_ID:
+        get_motor_measure(&motor_chassis[1], rx_data);
+        break;
+		
+    case CAN_3508_M3_ID:
+        get_motor_measure(&motor_chassis[2], rx_data);
+        break;
+		
+    case CAN_3508_M4_ID:
+        get_motor_measure(&motor_chassis[3], rx_data);
+        break;
 
-        default:
-        {
-            break;
-        }
+    case CAN_M2006_FEEDER_ID:
+        get_motor_measure(&motor_chassis[6], rx_data);
+        break;
+
+    case CAN_YAW_MOTOR_ID:
+        get_motor_measure(&motor_chassis[4], rx_data);
+        break;
+
+    case CAN_PIT_MOTOR_ID:
+        get_motor_measure(&motor_chassis[5], rx_data);
+        break;
+
+    default:
+        //HAL_GPIO_WritePin(GPIOE, LED_RED_Pin, GPIO_PIN_RESET);
+        break;
     }
 }
 

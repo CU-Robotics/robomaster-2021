@@ -10,7 +10,7 @@
 
 #include "turret.h"
 
-
+float ecdVal = 3000;
 PIDProfile yawProfile;
 PIDProfile pitchProfile;
 
@@ -40,12 +40,12 @@ void turretLoop(RC_ctrl_t* control_input) {
 		}
 
 		int16_t ballFeedSpeed = control_input->rc.ch[M_CONTROLLER_X_AXIS];
-    CAN_cmd_gimbal(0, 0, ballFeedSpeed, 0);
-    //CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
+    //CAN_cmd_gimbal(0, 0, ballFeedSpeed, 0);
+    CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
 }
 
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile) {
-    float ecdVal = get_yaw_gimbal_motor_measure_point()->ecd;
+    ecdVal = get_yaw_gimbal_motor_measure_point()->ecd;
     float yawPosition = 2.0 * M_PI * (get_yaw_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE);
     float pitchPosition = 2.0 * M_PI * (get_pitch_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE);
 
