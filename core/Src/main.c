@@ -21,6 +21,7 @@
 #include "can.h"
 #include "gpio.h"
 #include "dma.h"
+#include "tim.h"
 #include "usart.h"
 #include "math.h"
 
@@ -28,6 +29,7 @@
 #include "bsp_usart.h"
 #include "bsp_can.h"
 #include "CAN_receive.h"
+#include "bsp_fric.h"
 
 #include "chassis.h"
 #include "turret.h"
@@ -58,6 +60,10 @@ int main(void) {
 	MX_DMA_Init();
 	MX_USART1_UART_Init();
   MX_USART3_UART_Init();
+  MX_TIM8_Init();
+  MX_TIM1_Init();
+    
+	fric_off();
 
 	can_filter_init();
 
@@ -65,6 +71,16 @@ int main(void) {
 	usart1_tx_dma_init();
 	local_rc_ctrl = get_remote_control_point();
   
+	HAL_TIM_Base_Start(&htim1);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_Base_Start(&htim8);
+	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Start(&htim8, TIM_CHANNEL_3);
+		
   /* Init functions */
   chassisInit();
   turretInit();

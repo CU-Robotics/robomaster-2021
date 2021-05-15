@@ -30,6 +30,8 @@ can\turret.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h
 can\turret.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ramfunc.h
 can\turret.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr.h
 can\turret.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h
+can\turret.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
+can\turret.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 can\turret.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 can\turret.o: ../Inc/usart.h
 can\turret.o: ..\application\remote_control.h
@@ -38,6 +40,7 @@ can\turret.o: ..\bsp\boards\bsp_rc.h
 can\turret.o: ..\bsp\boards\struct_typedef.h
 can\turret.o: ../Inc/can.h
 can\turret.o: ..\application\CAN_receive.h
+can\turret.o: ..\bsp\boards\bsp_fric.h
 can\turret.o: ../Inc/constants.h
 can\turret.o: ../Inc/pid.h
 can\turret.o: ../Inc/turret.h
