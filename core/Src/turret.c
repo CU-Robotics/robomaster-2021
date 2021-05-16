@@ -16,7 +16,7 @@ PIDProfile pitchProfile;
 
 void turretInit() {
     // PID Profiles containing tuning parameters.
-    yawProfile.kP = 1.0f / (8 * M_PI);
+    yawProfile.kP = 4.0f / (8 * M_PI);
     pitchProfile.kP = 1.0f / (8 * M_PI);
 }
 

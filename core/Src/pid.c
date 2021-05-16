@@ -2,15 +2,22 @@
 #include "math.h"
 #include "constants.h"
 
+    float error; 
 float calculateProportional(float currentPosition, float setpoint, PIDProfile profile) {
     // Calculate error
-    float error = setpoint - currentPosition;
-    float error2 = M_ENCODER_GM6020_SCALE + error;
-	
-    if (absValueFloat(error2) < absValueFloat(error)) {
-        error = error2;
-    }
-    // Calculate correction and return
+		if (setpoint>currentPosition) {
+				 if (absValueFloat(setpoint-currentPosition) < absValueFloat(-2*M_PI + setpoint - currentPosition)) 
+					 error = setpoint - currentPosition;
+				 else  
+					 error = -2*M_PI - setpoint + currentPosition;
+		}
+		else{
+				 if(absValueFloat(setpoint-currentPosition)< absValueFloat(2*M_PI - currentPosition + setpoint)) 
+					 error = setpoint - currentPosition;
+				 else  
+					 error = 2*M_PI + setpoint - currentPosition;
+		}
+	  // Calculate correction and return
     return error * profile.kP + profile.kF;
 }
 
