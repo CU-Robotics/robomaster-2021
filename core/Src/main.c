@@ -95,7 +95,7 @@ int main(void) {
     //chassisLoop(local_rc_ctrl);
     turretLoop(local_rc_ctrl);
 		HAL_Delay(2);
-		tempECD = get_pitch_gimbal_motor_measure_point()->ecd;
+		tempECD = get_trigger_motor_measure_point()->ecd;
 		
 		//counter++;
 	}

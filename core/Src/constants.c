@@ -10,10 +10,16 @@ const int M_CONTROLLER_X_AXIS = 2;
 const int M_CONTROLLER_Y_AXIS = 3;
 const int M_CONTROLLER_ROTATION_AXIS = 1;
 
+
 // M3508 Motor
 const float M_MOTOR_M3508_VOLTAGE_SCALE = 16384.0f; 
 const float M_ENCODER_M3508_SCALE = 8191.0f;
-const float REDUCTION_RATIO = 3591.0f / 187.0f;
+const float M3508_REDUCTION_RATIO = 3591.0f / 187.0f;
+
+// M2006 Motor
+const float M_MOTOR_M2006_VOLTAGE_SCALE = 16384.0f; 
+const float M_ENCODER_M2006_SCALE = 8191.0f;
+const float M2006_REDUCTION_RATIO = 36.0f;
 
 // GM6020 Motor
 const float M_MOTOR_GM6020_VOLTAGE_SCALE = 30000.0f;

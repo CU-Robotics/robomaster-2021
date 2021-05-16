@@ -17,7 +17,7 @@ PIDProfile pitchProfile;
 void turretInit() {
     // PID Profiles containing tuning parameters.
     yawProfile.kP = 4.0f / (8 * M_PI);
-    pitchProfile.kP = 1.0f / (8 * M_PI);
+    pitchProfile.kP = 4.0f / (8 * M_PI);
 }
 
 void turretLoop(RC_ctrl_t* control_input) {
@@ -41,17 +41,26 @@ void turretLoop(RC_ctrl_t* control_input) {
 
 		int16_t ballFeedSpeed = control_input->rc.ch[M_CONTROLLER_X_AXIS];
     //CAN_cmd_gimbal(0, 0, ballFeedSpeed, 0);
-    CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
+    CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, turret.pitch * M_MOTOR_M3508_VOLTAGE_SCALE, 0, 0);
 }
 
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile) {
     ecdVal = get_yaw_gimbal_motor_measure_point()->ecd;
     float yawPosition = 2.0 * M_PI * (get_yaw_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE);
-    float pitchPosition = 2.0 * M_PI * (get_pitch_gimbal_motor_measure_point()->ecd / M_ENCODER_GM6020_SCALE);
-
+    float pitchPosition = 2.0 * M_PI * (get_pitch_gimbal_motor_measure_point()->ecd / M_ENCODER_M3508_SCALE);
+	
+		//crude mapping of pitch motor
+		/*
+		pitchPosition = pitchPosition* M3508_REDUCTION_RATIO;
+		while(pitchPosition >= 2.0 * M_PI)
+			pitchPosition = pitchPosition - 2.0 * M_PI;
+		while(pitchPosition <= -2.0 * M_PI)
+			pitchPosition = pitchPosition + 2.0 * M_PI;
+		*/
+	
     Turret turret;
     turret.yaw = calculateProportional(yawPosition, yawAngle, yawPIDProfile);
-    //turret.pitch = calculateProportional(pitchPosition, pitchAngle, pitchPIDProfile);
+    turret.pitch = calculateProportional(pitchPosition, pitchAngle, pitchPIDProfile);
 
     return turret;
 }

@@ -19,7 +19,12 @@ extern const int M_CONTROLLER_ROTATION_AXIS;
 // M3508 Motor
 extern const float M_MOTOR_M3508_VOLTAGE_SCALE;
 extern const float M_ENCODER_M3508_SCALE;
-extern const float REDUCTION_RATIO;
+extern const float M3508_REDUCTION_RATIO;
+
+// M2006 Motor
+extern const float M_MOTOR_M2006_VOLTAGE_SCALE; 
+extern const float M_ENCODER_M2006_SCALE;
+extern const float M2006_REDUCTION_RATIO;
 
 // GM6020 Motor
 extern const float M_MOTOR_GM6020_VOLTAGE_SCALE;
