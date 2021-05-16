@@ -18,10 +18,11 @@ typedef struct {
 
 typedef struct {
     float integralSum;
+    float lastError;
 } PIDState;
 
 // Calculates mecanum drive output state from controller input
-float calculateProportional(float currentPosition, float setpoint, PIDProfile profile);
+float calculateProportional(float currentPosition, float setpoint, PIDProfile profile, PIDState *state);
 
 float absValueFloat(float value);
 

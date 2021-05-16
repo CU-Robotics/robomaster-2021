@@ -3,11 +3,11 @@
 <title>Static Call Graph - [can\can.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image can\can.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Sat May 15 19:50:09 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Sun May 16 14:22:27 2021
 <BR><P>
-<H3>Maximum Stack Usage =        208 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        232 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-__rt_entry_main &rArr; main &rArr; turretLoop &rArr; calculateTurret &rArr; __aeabi_dmul
+__rt_entry_main &rArr; main &rArr; turretLoop &rArr; calculateTurret &rArr; calculateProportional
 <P>
 <H3>
 Functions with no stack information
@@ -123,8 +123,8 @@ Function Pointers
 Global Symbols
 </H3>
 <P><STRONG><a name="[60]"></a>__main</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, __main.o(!!!main))
-<BR><BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
-<LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry
+<BR><BR>[Calls]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry
+<LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
 </UL>
 
 <P><STRONG><a name="[61]"></a>__scatterload</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter))
@@ -216,8 +216,8 @@ Global Symbols
 <P><STRONG><a name="[fe]"></a>__rt_lib_shutdown_user_alloc_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, libshutdown2.o(.ARM.Collect$$libshutdown$$0000000E))
 
 <P><STRONG><a name="[62]"></a>__rt_entry</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry.o(.ARM.Collect$$rtentry$$00000000))
-<BR><BR>[Called By]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload_rt2
-<LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+<BR><BR>[Called By]<UL><LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__main
+<LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload_rt2
 </UL>
 
 <P><STRONG><a name="[ff]"></a>__rt_entry_presh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000002))
@@ -236,8 +236,8 @@ Global Symbols
 <P><STRONG><a name="[100]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[6b]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 208 + Unknown Stack Size
-<LI>Call Chain = __rt_entry_main &rArr; main &rArr; turretLoop &rArr; calculateTurret &rArr; __aeabi_dmul
+<BR><BR>[Stack]<UL><LI>Max Depth = 232 + Unknown Stack Size
+<LI>Call Chain = __rt_entry_main &rArr; main &rArr; turretLoop &rArr; calculateTurret &rArr; calculateProportional
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
@@ -1160,16 +1160,16 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;calculateProportional
 </UL>
 
-<P><STRONG><a name="[c2]"></a>calculateProportional</STRONG> (Thumb, 240 bytes, Stack size 28 bytes, pid.o(i.calculateProportional))
-<BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = calculateProportional
+<P><STRONG><a name="[c2]"></a>calculateProportional</STRONG> (Thumb, 288 bytes, Stack size 32 bytes, pid.o(i.calculateProportional))
+<BR><BR>[Stack]<UL><LI>Max Depth = 32<LI>Call Chain = calculateProportional
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;absValueFloat
 </UL>
 <BR>[Called By]<UL><LI><a href="#[c4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;calculateTurret
 </UL>
 
-<P><STRONG><a name="[c4]"></a>calculateTurret</STRONG> (Thumb, 294 bytes, Stack size 104 bytes, turret.o(i.calculateTurret))
-<BR><BR>[Stack]<UL><LI>Max Depth = 136<LI>Call Chain = calculateTurret &rArr; __aeabi_dmul
+<P><STRONG><a name="[c4]"></a>calculateTurret</STRONG> (Thumb, 300 bytes, Stack size 128 bytes, turret.o(i.calculateTurret))
+<BR><BR>[Stack]<UL><LI>Max Depth = 160<LI>Call Chain = calculateTurret &rArr; calculateProportional
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_yaw_gimbal_motor_measure_point
 <LI><a href="#[c9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_pitch_gimbal_motor_measure_point
@@ -1220,7 +1220,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[6c]"></a>main</STRONG> (Thumb, 168 bytes, Stack size 0 bytes, main.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = main &rArr; turretLoop &rArr; calculateTurret &rArr; __aeabi_dmul
+<BR><BR>[Stack]<UL><LI>Max Depth = 232<LI>Call Chain = main &rArr; turretLoop &rArr; calculateTurret &rArr; calculateProportional
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;usart1_tx_dma_init
 <LI><a href="#[d5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turretLoop
@@ -1256,12 +1256,12 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d4]"></a>turretInit</STRONG> (Thumb, 58 bytes, Stack size 0 bytes, turret.o(i.turretInit))
+<P><STRONG><a name="[d4]"></a>turretInit</STRONG> (Thumb, 210 bytes, Stack size 0 bytes, turret.o(i.turretInit))
 <BR><BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[d5]"></a>turretLoop</STRONG> (Thumb, 412 bytes, Stack size 72 bytes, turret.o(i.turretLoop))
-<BR><BR>[Stack]<UL><LI>Max Depth = 208<LI>Call Chain = turretLoop &rArr; calculateTurret &rArr; __aeabi_dmul
+<P><STRONG><a name="[d5]"></a>turretLoop</STRONG> (Thumb, 424 bytes, Stack size 72 bytes, turret.o(i.turretLoop))
+<BR><BR>[Stack]<UL><LI>Max Depth = 232<LI>Call Chain = turretLoop &rArr; calculateTurret &rArr; calculateProportional
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fric_on
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_cmd_gimbal_working

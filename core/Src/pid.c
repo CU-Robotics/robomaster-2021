@@ -3,7 +3,7 @@
 #include "constants.h"
 
     float error; 
-float calculateProportional(float currentPosition, float setpoint, PIDProfile profile) {
+float calculateProportional(float currentPosition, float setpoint, PIDProfile profile, PIDState *state) {
     // Calculate error
 		if (setpoint>currentPosition) {
 				 if (absValueFloat(setpoint-currentPosition) < absValueFloat(-2*M_PI + setpoint - currentPosition)) 
@@ -17,8 +17,15 @@ float calculateProportional(float currentPosition, float setpoint, PIDProfile pr
 				 else  
 					 error = 2*M_PI + setpoint - currentPosition;
 		}
+		
+		//Calculate derivative
+		float derivative = error - state->lastError;
+		
+		//Calculate integral
+		float integral = (state->integralSum += error);
+		
 	  // Calculate correction and return
-    return error * profile.kP + profile.kF;
+    return error * profile.kP + derivative * profile.kD + integral * profile.kI + profile.kF;
 }
 
 float absValueFloat(float value) {

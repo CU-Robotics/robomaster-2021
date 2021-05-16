@@ -25,7 +25,7 @@ void turretInit();
 void turretLoop();
 
 // Calculates turret output state from desired pitch and yaw angles
-Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile);
+Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile, PIDState *yawPIDState, PIDState *pitchPIDState);
 
 
 #ifdef __cplusplus
