@@ -27,14 +27,15 @@ void turretLoop(RC_ctrl_t* control_input) {
 
 
     // If else statement for shooting turret:
-    float switchValue = control_input->rc.s[M_MOTOR_SNAIL_SWITCH_STATES]; // 1 2 or 3
+    float M_MOTOR_SNAIL_SWITCH_STATES[] = control_input->rc.s[0]; // 1 2 or 3
 
-    if(switchValue == control_input->rc.s[M_MOTOR_SNAIL_Z]) {
+    if(M_MOTOR_SNAIL_SWITCH_STATES[] == 1) {
         //if switchValue = 1, input max value to CAN_cmd
- CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, M_MOTOR_SNAIL_MAX, 0);
+        fric_on((uint16_t)(M_MOTOR_SNAIL_MAX + M_MOTOR_SNAIL_OFFSET));
         //else, call function with 0 as input value for snail motor
         else{
-             CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
+        fric_on((uint16_t)(M_MOTOR_SNAIL_OFFSET));         
+
         }
     }
 
