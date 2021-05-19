@@ -448,6 +448,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\chassis.c</FilePath>
             </File>
+            <File>
+              <FileName>tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\tim.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -567,6 +572,11 @@
               <FileName>bsp_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\bsp\boards\bsp_usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_fric.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\bsp\boards\bsp_fric.c</FilePath>
             </File>
           </Files>
         </Group>

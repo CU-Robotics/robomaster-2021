@@ -21,6 +21,7 @@
 #define CAN_RECEIVE_H
 
 #include "struct_typedef.h"
+#include "main.h"
 
 #define CHASSIS_CAN hcan1
 #define GIMBAL_CAN hcan2
@@ -37,7 +38,7 @@ typedef enum
 
     CAN_YAW_MOTOR_ID = 0x205,
     CAN_PIT_MOTOR_ID = 0x206,
-    CAN_TRIGGER_MOTOR_ID = 0x207,
+    CAN_M2006_FEEDER_ID = 0x207,
     CAN_GIMBAL_ALL_ID = 0x1FF,
 		CAN_CHASSIS_ALL_ID2 = 0x1FF
 
@@ -71,7 +72,7 @@ typedef struct
   * @retval         none
   */
 extern void CAN_cmd_gimbal(int16_t yaw, int16_t pitch, int16_t shoot, int16_t rev);
-
+extern void ourCan(CAN_HandleTypeDef *hcan);
 /**
   * @brief          send CAN packet of ID 0x700, it will set chassis motor 3508 to quick ID setting
   * @param[in]      none
