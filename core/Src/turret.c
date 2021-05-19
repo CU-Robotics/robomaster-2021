@@ -35,20 +35,15 @@ void turretInit() {
 }
 
 void turretLoop(RC_ctrl_t* control_input) {
-    float yawSetpoint = 2.0 * M_PI * (control_input->rc.ch[M_CONTROLLER_X_AXIS] / (M_CONTROLLER_JOYSTICK_SCALE*2));
-    float pitchSetpoint = 2.0 * M_PI * (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+    float yawSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_X_AXIS] / (M_CONTROLLER_JOYSTICK_SCALE));
+    float pitchSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
 
     Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile, &yawState, &pitchState);
 
-
-    // If else statement for shooting turret:
-    int switchValue = control_input->rc.s[M_MOTOR_SNAIL_SWITCH]; // 1 2 or 3
-
-    if(switchValue == M_MOTOR_SNAIL_Z) {
-        //run snail motor
+    if(control_input->rc.s[0] == 1) {
+      //run snail motor
 			fric_on((uint16_t)(M_MOTOR_SNAIL_OFFSET + M_MOTOR_SNAIL_MAX));
-    }
-		else{
+    } else {
 			//turn off snail motor
 			fric_on((uint16_t)(M_MOTOR_SNAIL_OFFSET));
 		}
