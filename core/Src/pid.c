@@ -1,5 +1,6 @@
 #include "pid.h"
 #include "math.h"
+#include "utils.h"
 #include "constants.h"
 
 float calculateProportional(float currentPosition, float setpoint, PIDProfile profile, PIDState *state) {

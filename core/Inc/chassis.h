@@ -22,8 +22,8 @@ typedef struct {
    float frontLeft; // ID 4
 } Chassis;
 
-void chassisInit();
-void chassisLoop();
+void chassisInit(void);
+void chassisLoop(const RC_ctrl_t* control_input);
 
 // Calculates mecanum drive output state from controller input
 Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottle);

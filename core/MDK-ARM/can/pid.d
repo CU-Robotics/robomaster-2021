@@ -34,4 +34,7 @@ can\pid.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h
 can\pid.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h
 can\pid.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 can\pid.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+can\pid.o: ../Inc/utils.h
 can\pid.o: ../Inc/constants.h
+can\pid.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+can\pid.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

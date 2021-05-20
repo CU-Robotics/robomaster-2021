@@ -32,8 +32,6 @@ void turretInit() {
     pitchProfile.kD = 0.0f / (8 * M_PI);
 	
 		//PID States
-		yawState.integralSum = 0;
-		pitchState.integralSum = 0;
 		
 		yawState.lastError = 0;
 		pitchState.lastError = 0;
@@ -43,8 +41,8 @@ void turretInit() {
     prevPitchPosition = 0;
 }
 
-void turretLoop(RC_ctrl_t* control_input) {
-    if (zeored) {
+void turretLoop(const RC_ctrl_t* control_input) {
+    if (zeroed) {
         float yawSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_X_AXIS] / (M_CONTROLLER_JOYSTICK_SCALE));
         float pitchSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
 
@@ -75,8 +73,8 @@ Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfil
     pitchPosition = M_M3508_REDUCTION_RATIO * (pitchPosition + pitchRotations * M_M3508_ENCODER_SCALE);
 
     Turret turret;
-    turret.yaw = calculateProportional(2.0 * M_PI * yawPosition, yawAngle, yawPIDProfile, yawPIDState);
-    turret.pitch = calculateProportional(2.0 * M_PI * pitchPosition, pitchAngle, pitchPIDProfile, pitchPIDState);
+    turret.yaw = calculateProportional(2.0f * M_PI * yawPosition, yawAngle, yawPIDProfile, yawPIDState);
+    turret.pitch = calculateProportional(2.0f * M_PI * pitchPosition, pitchAngle, pitchPIDProfile, pitchPIDState);
 
     return turret;
 }

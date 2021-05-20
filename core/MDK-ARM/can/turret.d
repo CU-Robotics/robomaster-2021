@@ -43,4 +43,7 @@ can\turret.o: ..\application\CAN_receive.h
 can\turret.o: ..\bsp\boards\bsp_fric.h
 can\turret.o: ../Inc/constants.h
 can\turret.o: ../Inc/pid.h
+can\turret.o: ../Inc/utils.h
+can\turret.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+can\turret.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 can\turret.o: ../Inc/turret.h

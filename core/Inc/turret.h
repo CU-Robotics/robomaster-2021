@@ -20,8 +20,8 @@ typedef struct {
    float pitch; // ID 6
 } Turret;
 
-void turretInit();
-void turretLoop();
+void turretInit(void);
+void turretLoop(const RC_ctrl_t* control_input);
 
 // Calculates turret output state from desired pitch and yaw angles
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile, PIDState *yawPIDState, PIDState *pitchPIDState);

@@ -439,11 +439,6 @@
               <FilePath>..\Src\pid.c</FilePath>
             </File>
             <File>
-              <FileName>constants.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\constants.c</FilePath>
-            </File>
-            <File>
               <FileName>chassis.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\chassis.c</FilePath>
@@ -452,6 +447,11 @@
               <FileName>tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\tim.c</FilePath>
+            </File>
+            <File>
+              <FileName>utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\utils.c</FilePath>
             </File>
           </Files>
         </Group>

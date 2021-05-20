@@ -4,6 +4,8 @@
 #include "can.h"
 #include "CAN_receive.h"
 
+#include "utils.h"
+
 #include "constants.h"
 
 #include "chassis.h"
@@ -13,14 +15,14 @@ void chassisInit() {
 
 }
 
-void chassisLoop(RC_ctrl_t* control_input) {
+void chassisLoop(const RC_ctrl_t* control_input) {
 	float xThrottle = (control_input->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
     float yThrottle = (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
     float rotation = (control_input->rc.ch[M_CONTROLLER_ROTATION_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
 
     Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
 
-    CAN_cmd_chassis((int16_t) (chassis.frontRight * M_MOTOR_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_MOTOR_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_MOTOR_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_MOTOR_M3508_CURRENT_SCALE));
+    CAN_cmd_chassis((int16_t) (chassis.frontRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_M3508_CURRENT_SCALE));
 }
 
 Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottle) {
@@ -31,13 +33,13 @@ Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottl
 	float backLeft = xThrottle - yThrottle + rotationThrottle;
 
 	// Find the highest magnitude (max) value in the four power variables.
-	float max = abs(frontRight);
-	if (abs(frontLeft) > max) max = abs(frontLeft);
-	if (abs(backRight) > max) max = abs(backRight);
-	if (abs(backLeft) > max) max = abs(backLeft);
+	float max = absValueFloat(frontRight);
+	if (absValueFloat(frontLeft) > max) max = absValueFloat(frontLeft);
+	if (absValueFloat(backRight) > max) max = absValueFloat(backRight);
+	if (absValueFloat(backLeft) > max) max = absValueFloat(backLeft);
 
 	// If the max value is greater than 1.0, divide all the motor power variables by the max value, forcing all magnitudes to be less than or equal to 1.0.
-	if (max > 1.0) {
+	if (max > 1.0f) {
 		frontRight /= -max;
 		frontLeft /= max;
 		backRight /= -max;

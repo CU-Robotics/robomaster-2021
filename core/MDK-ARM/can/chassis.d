@@ -40,5 +40,8 @@ can\chassis.o: ..\bsp\boards\bsp_rc.h
 can\chassis.o: ..\bsp\boards\struct_typedef.h
 can\chassis.o: ../Inc/can.h
 can\chassis.o: ..\application\CAN_receive.h
+can\chassis.o: ../Inc/utils.h
 can\chassis.o: ../Inc/constants.h
+can\chassis.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+can\chassis.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
 can\chassis.o: ../Inc/chassis.h

@@ -19,7 +19,7 @@ int countRotationsM3508(float curr_pos, float prev_pos) {
     return 0;
 }
 
-bool isM3508AtHardstop(int[M_ZERO_HARDSTOP_TIME_THRESHOLD] encoderHistory) {
+bool isM3508AtHardstop(int encoderHistory[M_ZERO_HARDSTOP_TIME_THRESHOLD]) {
     int max = encoderHistory[0];
     int min = encoderHistory[0];
     for (int i = 0; i < M_ZERO_HARDSTOP_TIME_THRESHOLD; i++) {
