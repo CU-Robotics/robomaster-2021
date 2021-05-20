@@ -10,12 +10,12 @@ float calculateProportional(float currentPosition, float setpoint, PIDProfile pr
 		if (absValueFloat(setpoint-currentPosition) < absValueFloat(-2*M_PI + setpoint - currentPosition)) 
 			error = setpoint - currentPosition;
 		else  
-			error = -2*M_PI - setpoint + currentPosition;
+			error = -2 * M_PI - setpoint + currentPosition;
 	} else {
 		if (absValueFloat(setpoint-currentPosition)< absValueFloat(2*M_PI - currentPosition + setpoint)) 
 			error = setpoint - currentPosition;
 		else  
-			error = 2*M_PI + setpoint - currentPosition;
+			error = 2 * M_PI + setpoint - currentPosition;
 	}
 	
 	//Calculate derivative
@@ -28,9 +28,3 @@ float calculateProportional(float currentPosition, float setpoint, PIDProfile pr
     return error * profile.kP + derivative * profile.kD + integral * profile.kI + profile.kF;
 }
 
-float absValueFloat(float value) {
-    if (value < 0) {
-        return -value;
-    }
-    return value;
-}

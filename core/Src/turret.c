@@ -40,23 +40,6 @@ void turretLoop(RC_ctrl_t* control_input) {
 
     Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile, &yawState, &pitchState);
 
-<<<<<<< HEAD
-    // If else statement for shooting turret:
-    float M_MOTOR_SNAIL_SWITCH_STATES[] = control_input->rc.s[0]; // 1 2 or 3
-
-    if(M_MOTOR_SNAIL_SWITCH_STATES[] == 1) {
-        //if switchValue = 1, input max value to CAN_cmd
-        fric_on((uint16_t)(M_MOTOR_SNAIL_MAX + M_MOTOR_SNAIL_OFFSET));
-        //else, call function with 0 as input value for snail motor
-        else{
-        fric_on((uint16_t)(M_MOTOR_SNAIL_OFFSET));         
-
-        }
-    }
-
-
-    CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, 0, 0, 0);
-=======
     if(control_input->rc.s[0] == 1) {
       //run snail motor
 			fric_on((uint16_t)(M_MOTOR_SNAIL_OFFSET + M_MOTOR_SNAIL_MAX));
@@ -68,7 +51,6 @@ void turretLoop(RC_ctrl_t* control_input) {
 		int16_t ballFeedSpeed = control_input->rc.ch[M_CONTROLLER_X_AXIS];
     //CAN_cmd_gimbal(0, 0, ballFeedSpeed, 0);
     CAN_cmd_gimbal_working(turret.yaw * M_MOTOR_GM6020_VOLTAGE_SCALE, turret.pitch * M_MOTOR_M3508_VOLTAGE_SCALE, 0, 0);
->>>>>>> 1e88f270e1d0fe7b663b3fb24b7510298db2865e
 }
 
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile, PIDState *yawPIDState, PIDState *pitchPIDState) {

@@ -31,19 +31,8 @@ extern const float M_MOTOR_GM6020_VOLTAGE_SCALE;
 extern const float M_ENCODER_GM6020_SCALE;
 
 //SNAIL Motor
-<<<<<<< HEAD
 const float M_MOTOR_SNAIL_MAX;
-const float M_MOTOR_SNAIL_SWITCH_STATES[];
 const float M_MOTOR_SNAIL_OFFSET;
-=======
-extern const float M_MOTOR_SNAIL_X;
-extern const float M_MOTOR_SNAIL_Y;
-extern const float M_MOTOR_SNAIL_Z;
-extern const float M_MOTOR_SNAIL_MAX;
-extern const float M_MOTOR_SNAIL_SWITCH_STATES[3];
-extern const int M_MOTOR_SNAIL_SWITCH;
-extern const float M_MOTOR_SNAIL_OFFSET;
->>>>>>> 1e88f270e1d0fe7b663b3fb24b7510298db2865e
 
 #ifdef __cplusplus
 }
