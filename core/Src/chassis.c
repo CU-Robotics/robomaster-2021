@@ -20,7 +20,7 @@ void chassisLoop(RC_ctrl_t* control_input) {
 
     Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
 
-    CAN_cmd_chassis((int16_t) (chassis.frontRight * M_MOTOR_M3508_VOLTAGE_SCALE), (int16_t) (chassis.backRight * M_MOTOR_M3508_VOLTAGE_SCALE), (int16_t) (chassis.backLeft * M_MOTOR_M3508_VOLTAGE_SCALE), (int16_t) (chassis.frontLeft * M_MOTOR_M3508_VOLTAGE_SCALE));
+    CAN_cmd_chassis((int16_t) (chassis.frontRight * M_MOTOR_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_MOTOR_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_MOTOR_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_MOTOR_M3508_CURRENT_SCALE));
 }
 
 Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottle) {

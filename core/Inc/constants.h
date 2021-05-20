@@ -6,33 +6,36 @@
 
 #include "main.h"
 
-// Mathematical Constants
-extern const float M_PI;
+// -- MATH --
+#define M_PI = 3.1415926f;
 
-// Controller
-extern const float M_CONTROLLER_JOYSTICK_SCALE;
-extern const int M_CONTROLLER_SWITCH_STATES[];
-extern const int M_CONTROLLER_X_AXIS;
-extern const int M_CONTROLLER_Y_AXIS;
-extern const int M_CONTROLLER_ROTATION_AXIS;
+// -- CONTROLS --
+#define M_CONTROLLER_JOYSTICK_SCALE = 660.0f;
+#define M_CONTROLLER_SWITCH_STATES[] = {0, 1, 2};
+#define M_CONTROLLER_X_AXIS = 2;
+#define M_CONTROLLER_Y_AXIS = 3;
+#define M_CONTROLLER_ROTATION_AXIS = 1;
 
-// M3508 Motor
-extern const float M_MOTOR_M3508_VOLTAGE_SCALE;
-extern const float M_ENCODER_M3508_SCALE;
-extern const float M3508_REDUCTION_RATIO;
+// -- MOTORS --
+// M3508
+#define M_M3508_CURRENT_SCALE = 16384.0f; 
+#define M_M3508_ENCODER_SCALE = 8191.0f;
+#define M_M3508_REDUCTION_RATIO = 3591.0f / 187.0f;
+// M2006
+#define M_M2006_CURRENT_SCALE = 16384.0f; 
+#define M_M2006_ENCODER_SCALE = 8191.0f;
+#define M_M2006_REDUCTION_RATIO = 36.0f;
+// GM6020
+#define M_GM6020_VOLTAGE_SCALE = 30000.0f;
+#define M_GM6020_ENCODER_SCALE = 8191.0f;
+// Snail
+#define M_SNAIL_SPEED_SCALE = 1000.0f;
+#define M_SNAIL_SPEED_OFFSET = 1000.0f;
 
-// M2006 Motor
-extern const float M_MOTOR_M2006_VOLTAGE_SCALE; 
-extern const float M_ENCODER_M2006_SCALE;
-extern const float M2006_REDUCTION_RATIO;
-
-// GM6020 Motor
-extern const float M_MOTOR_GM6020_VOLTAGE_SCALE;
-extern const float M_ENCODER_GM6020_SCALE;
-
-//SNAIL Motor
-const float M_MOTOR_SNAIL_MAX;
-const float M_MOTOR_SNAIL_OFFSET;
+// -- MISC --
+#define M_MASTER_LOOP_PERIOD = 1.0f; // Code runs at 1000Hz (1ms period)
+#define M_ZERO_HARDSTOP_TIME_THRESHOLD = 50.0f; // Motor must be held stationary for at least 50ms to detect a hardstop
+#define M_ZERO_HARDSTOP_RANGE_THRESHOLD = M_PI / 128.0f // All encoder values must be this close to each other in order to count as stationary
 
 #ifdef __cplusplus
 }

@@ -13,7 +13,6 @@
 #include "main.h"
 #include "pid.h"
 
-
 // Stores power values for the two turret motors.
 // Turret motor IDs are permanently set to 5 and 6, yaw and pitch respectively.
 typedef struct {
