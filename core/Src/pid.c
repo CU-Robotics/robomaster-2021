@@ -22,7 +22,12 @@ float calculateProportional(float currentPosition, float setpoint, PIDProfile pr
 	float derivative = error - state->lastError;
 	
 	//Calculate integral
-	float integral = (state->integralSum += error);
+	state->errorBuffer[100] = error;
+	float integral = error;
+	for(int i; i < 100; i++){
+		state->errorBuffer[i] = state->errorBuffer[i+1];
+		integral += state->errorBuffer[i];
+	}
 		
 	// Calculate correction and return
     return error * profile.kP + derivative * profile.kD + integral * profile.kI + profile.kF;

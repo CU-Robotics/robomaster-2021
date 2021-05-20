@@ -17,7 +17,7 @@ typedef struct {
 } PIDProfile;
 
 typedef struct {
-    float integralSum;
+    float errorBuffer [101];
     float lastError;
 } PIDState;
 
