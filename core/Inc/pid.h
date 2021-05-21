@@ -21,7 +21,7 @@ typedef struct {
     float lastError;
 } PIDState;
 
-// Calculates mecanum drive output state from controller input
+// Calculates mecanum drive output state from controller input given an input in radians
 float calculateProportional(float currentPosition, float setpoint, PIDProfile profile, PIDState *state);
 
 #ifdef __cplusplus

@@ -19,6 +19,8 @@ PIDState pitchState;
 bool zeroed;
 int pitchRotations;
 int prevPitchPosition;
+int pitchHistory[M_ZERO_HARDSTOP_TIME_THRESHOLD];
+int pitchOffset;
 
 void turretInit() {
     // PID Profiles containing tuning parameters.
@@ -39,6 +41,9 @@ void turretInit() {
     zeroed = false;
     pitchRotations = 0;
     prevPitchPosition = 0;
+		//Fill pitch history with values preventing false positive hardstop reading
+		for(int i = 0; i < M_ZERO_HARDSTOP_TIME_THRESHOLD; i++)
+				pitchHistory[i] = 30*i;
 }
 
 void turretLoop(const RC_ctrl_t* control_input) {
@@ -60,21 +65,42 @@ void turretLoop(const RC_ctrl_t* control_input) {
 
         CAN_cmd_gimbal_working(turret.yaw * M_GM6020_VOLTAGE_SCALE, turret.pitch * M_M3508_CURRENT_SCALE, 0, 0);
     } else {
-        
+				//move pitch motor towards endstop
+        CAN_cmd_gimbal_working(0, 4000, 0, 0);
+				
+				//capture encoder value
+				float pitchPosition = (get_pitch_gimbal_motor_measure_point()->ecd);
+			
+				//rotate pitch history
+				for(int i = 0; i < M_ZERO_HARDSTOP_TIME_THRESHOLD - 1; i++){
+					pitchHistory[i] = pitchHistory[i+1];
+				}
+				pitchHistory[M_ZERO_HARDSTOP_TIME_THRESHOLD - 1] = pitchPosition;
+				
+				//check if at hardstop
+				if(isM3508AtHardstop(pitchHistory)){
+						zeroed = true;
+						pitchOffset = pitchPosition;
+				}
     }
+
 }
 
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile, PIDState *yawPIDState, PIDState *pitchPIDState) {
-    float yawPosition = (get_yaw_gimbal_motor_measure_point()->ecd / M_GM6020_ENCODER_SCALE);
-    float pitchPosition = (get_pitch_gimbal_motor_measure_point()->ecd / M_M3508_ENCODER_SCALE);
-
+    //captures postitions in encoders native format
+		float yawPosition = (get_yaw_gimbal_motor_measure_point()->ecd);
+    float pitchPosition = (get_pitch_gimbal_motor_measure_point()->ecd);
+		
+		//keeps track of true position including reduction
     pitchRotations += countRotationsM3508(pitchPosition, prevPitchPosition);
     prevPitchPosition = pitchPosition;
-    pitchPosition = M_M3508_REDUCTION_RATIO * (pitchPosition + pitchRotations * M_M3508_ENCODER_SCALE);
+    pitchPosition = (pitchPosition + pitchRotations * M_M3508_ENCODER_SCALE - pitchOffset) * M_M3508_REDUCTION_RATIO;
 
     Turret turret;
-    turret.yaw = calculateProportional(2.0f * M_PI * yawPosition, yawAngle, yawPIDProfile, yawPIDState);
-    turret.pitch = calculateProportional(2.0f * M_PI * pitchPosition, pitchAngle, pitchPIDProfile, pitchPIDState);
+	
+		//calculate turret thrusts using PID with input of radians
+    turret.yaw = calculateProportional((2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE, yawAngle, yawPIDProfile, yawPIDState);
+    turret.pitch = calculateProportional((2.0f * M_PI * pitchPosition) / M_M3508_ENCODER_SCALE, pitchAngle, pitchPIDProfile, pitchPIDState);
 
     return turret;
 }

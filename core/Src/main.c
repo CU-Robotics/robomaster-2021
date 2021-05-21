@@ -92,7 +92,7 @@ int main(void) {
   while (1) {
     //chassisLoop(local_rc_ctrl);
     turretLoop(local_rc_ctrl);
-		HAL_Delay(2);
+		HAL_Delay(5);
 		tempECD = get_trigger_motor_measure_point()->ecd;
 		
 		//counter++;

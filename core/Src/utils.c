@@ -31,7 +31,7 @@ bool isM3508AtHardstop(int encoderHistory[M_ZERO_HARDSTOP_TIME_THRESHOLD]) {
     }
 
     float maxRadians = (2 * M_PI * max) / (M_M3508_ENCODER_SCALE);
-    float minRadians = (2 * M_PI * max) / (M_M3508_ENCODER_SCALE);
+    float minRadians = (2 * M_PI * min) / (M_M3508_ENCODER_SCALE);
     if ((maxRadians - minRadians) < M_ZERO_HARDSTOP_RANGE_THRESHOLD)
         return true;
     return false;
