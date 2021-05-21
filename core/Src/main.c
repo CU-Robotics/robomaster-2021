@@ -91,10 +91,20 @@ int main(void) {
   /* Loop functions */
   while (1) {
     //chassisLoop(local_rc_ctrl);
+		/*
     turretLoop(local_rc_ctrl);
 		HAL_Delay(5);
 		tempECD = get_trigger_motor_measure_point()->ecd;
-		
+		*/
+		HAL_Delay(5);
+		CAN_cmd_gimbal_working(0,0,5*local_rc_ctrl->rc.ch[3],0);
+		if(local_rc_ctrl->rc.s[0] == 1) {
+				// Run snail motor
+				fric_on((uint16_t)(2000));
+		} else {
+				// Turn off snail motor
+				fric_on((uint16_t)(1000));
+		}
 		//counter++;
 	}
 }
