@@ -3,7 +3,7 @@
 #include "utils.h"
 #include "constants.h"
 
-float calculateProportional(float currentPosition, float setpoint, PIDProfile profile, PIDState *state) {
+float calculatePID(float currentPosition, float setpoint, PIDProfile profile, PIDState *state) {
 	float error;
 
 	// Calculate error
@@ -24,13 +24,12 @@ float calculateProportional(float currentPosition, float setpoint, PIDProfile pr
 	
 	//Calculate integral
 	float integral = error;
-	for(int i = 0; i < 100; i++){
+	for(int i = 0; i < M_PID_INTEGRAL_BUFFER_SIZE; i++){
 		state->errorBuffer[i] = state->errorBuffer[i+1];
 		integral += state->errorBuffer[i];
 	}
-	state->errorBuffer[100] = error;
+	state->errorBuffer[M_PID_INTEGRAL_BUFFER_SIZE] = error;
 		
 	// Calculate correction and return
     return error * profile.kP + derivative * profile.kD + integral * profile.kI + profile.kF;
 }
-

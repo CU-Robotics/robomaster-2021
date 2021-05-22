@@ -17,12 +17,12 @@ typedef struct {
 } PIDProfile;
 
 typedef struct {
-    float errorBuffer [101];
+    float errorBuffer [M_PID_INTEGRAL_BUFFER_SIZE + 1];
     float lastError;
 } PIDState;
 
 // Calculates mecanum drive output state from controller input given an input in radians
-float calculateProportional(float currentPosition, float setpoint, PIDProfile profile, PIDState *state);
+float calculatePID(float currentPosition, float setpoint, PIDProfile profile, PIDState *state);
 
 #ifdef __cplusplus
 }
