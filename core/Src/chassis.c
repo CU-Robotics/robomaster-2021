@@ -39,7 +39,7 @@ void chassisLoop(const RC_ctrl_t* control_input) {
 	chassis.backLeft = calculatePID(get_chassis_motor_measure_point(3)->speed_rpm, chassis.backLeft * M_CHASSIS_MAX_RPM * (1 / M_M3508_REDUCTION_RATIO), profile, &backLeftState) / M_CHASSIS_MAX_RPM;
 	chassis.frontLeft = calculatePID(get_chassis_motor_measure_point(4)->speed_rpm, chassis.frontLeft * M_CHASSIS_MAX_RPM * (1 / M_M3508_REDUCTION_RATIO), profile, &frontLeftState) / M_CHASSIS_MAX_RPM;
 
-    CAN_cmd_chassis((int16_t) (chassis.frontRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_M3508_CURRENT_SCALE));
+    CAN_cmd_chassis((int16_t) (((chassis.frontRight * M_M3508_REDUCTION_RATIO) / M_CHASSIS_MAX_RPM) * M_M3508_CURRENT_SCALE), (int16_t) (((chassis.backRight * M_M3508_REDUCTION_RATIO) / M_CHASSIS_MAX_RPM) * M_M3508_CURRENT_SCALE), (int16_t) (((chassis.backLeft * M_M3508_REDUCTION_RATIO) / M_CHASSIS_MAX_RPM) * M_M3508_CURRENT_SCALE), (int16_t) (((chassis.frontLeft * M_M3508_REDUCTION_RATIO) / M_CHASSIS_MAX_RPM) * M_M3508_CURRENT_SCALE));
 }
 
 Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottle) {
