@@ -18,9 +18,9 @@ PIDState frontLeftState;
 
 void chassisInit() {
     // PID Profiles containing tuning parameters.
-    profile.kP = 16.0f / (8 * M_PI);
-    profile.kI = 0.00025f / (8 * M_PI);
-    profile.kD = 2.0f / (8 * M_PI);
+    profile.kP = 1.0f / (8 * M_PI);
+    profile.kI = 0f / (8 * M_PI);
+    profile.kD = 0f / (8 * M_PI);
 
 	frontRightState.lastError = 0;
     backRightState.lastError = 0;
