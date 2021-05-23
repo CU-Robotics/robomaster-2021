@@ -5,6 +5,7 @@
 #endif
 
 #include "main.h"
+#include "constants.h"
 
 
 // Stores power values for the four chassis motors.
