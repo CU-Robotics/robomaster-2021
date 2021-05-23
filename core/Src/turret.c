@@ -25,16 +25,14 @@ int pitchOffset;
 void turretInit() {
     // PID Profiles containing tuning parameters.
     yawProfile.kP = 16.0f / (8 * M_PI);
-    pitchProfile.kP = 4.0f / (8 * M_PI);
-
     yawProfile.kI = 0.00025f / (8 * M_PI);
-    pitchProfile.kI = 0.01f / (8 * M_PI);
-	
     yawProfile.kD = 2.0f / (8 * M_PI);
+
+    pitchProfile.kP = 4.0f / (8 * M_PI);
+    pitchProfile.kI = 0.01f / (8 * M_PI);
     pitchProfile.kD = 0.0f / (8 * M_PI);
 	
-    //PID States
-    
+    // PID States
     yawState.lastError = 0;
     pitchState.lastError = 0;
 
@@ -70,13 +68,13 @@ void turretLoop(const RC_ctrl_t* control_input) {
 				
 				//capture encoder value
 				float pitchPosition = (get_pitch_gimbal_motor_measure_point()->ecd);
-			
+
 				//rotate pitch history
-				for(int i = 0; i < M_ZERO_HARDSTOP_TIME_THRESHOLD - 1; i++){
+				for (int i = 0; i < M_ZERO_HARDSTOP_TIME_THRESHOLD - 1; i++){
 					pitchHistory[i] = pitchHistory[i+1];
 				}
 				pitchHistory[M_ZERO_HARDSTOP_TIME_THRESHOLD - 1] = pitchPosition;
-				
+
 				//check if at hardstop
 				if(isM3508AtHardstop(pitchHistory)){
 						zeroed = true;
@@ -89,14 +87,14 @@ Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfil
     //captures postitions in encoders native format
 		float yawPosition = (get_yaw_gimbal_motor_measure_point()->ecd);
     float pitchPosition = (get_pitch_gimbal_motor_measure_point()->ecd);
-		
+
 		//keeps track of true position including reduction
     pitchRotations += countRotationsM3508(pitchPosition, prevPitchPosition);
     prevPitchPosition = pitchPosition;
     pitchPosition = (pitchPosition + pitchRotations * M_M3508_ENCODER_SCALE - pitchOffset) * M_M3508_REDUCTION_RATIO;
 
     Turret turret;
-	
+
 		//calculate turret thrusts using PID with input of radians
     turret.yaw = calculatePID((2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE, yawAngle, yawPIDProfile, yawPIDState);
     turret.pitch = calculatePID((2.0f * M_PI * pitchPosition * M_M3508_REDUCTION_RATIO) / M_M3508_ENCODER_SCALE, pitchAngle, pitchPIDProfile, pitchPIDState);

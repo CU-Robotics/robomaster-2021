@@ -16,6 +16,9 @@
 #define M_CONTROLLER_Y_AXIS 3
 #define M_CONTROLLER_ROTATION_AXIS 1
 
+// -- PHYSICAL CONSTRAINTS --
+#define M_CHASSIS_MAX_RPM 400.0f                        // Chassis motors are capped at this speed
+
 // -- MOTORS --
 // M3508
 #define M_M3508_CURRENT_SCALE 16384.0f                  // Scale of M3508 motor input, where this value is max current

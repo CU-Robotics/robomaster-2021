@@ -4,15 +4,28 @@
 #include "can.h"
 #include "CAN_receive.h"
 
+#include "pid.h"
 #include "utils.h"
-
 #include "constants.h"
 
 #include "chassis.h"
 
+PIDProfile profile;
+PIDState frontRightState;
+PIDState backRightState;
+PIDState backLeftState;
+PIDState frontLeftState;
 
 void chassisInit() {
+    // PID Profiles containing tuning parameters.
+    profile.kP = 16.0f / (8 * M_PI);
+    profile.kI = 0.00025f / (8 * M_PI);
+    profile.kD = 2.0f / (8 * M_PI);
 
+	frontRightState.lastError = 0;
+    backRightState.lastError = 0;
+	backLeftState.lastError = 0;
+	frontLeftState.lastError = 0;
 }
 
 void chassisLoop(const RC_ctrl_t* control_input) {
@@ -21,6 +34,10 @@ void chassisLoop(const RC_ctrl_t* control_input) {
     float rotation = (control_input->rc.ch[M_CONTROLLER_ROTATION_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
 
     Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
+	chassis.frontRight = calculatePID(get_chassis_motor_measure_point(1)->speed_rpm, chassis.frontRight * M_CHASSIS_MAX_RPM, profile, frontRightState) / M_CHASSIS_MAX_RPM;
+	chassis.backRight = calculatePID(get_chassis_motor_measure_point(2)->speed_rpm, chassis.backRight * M_CHASSIS_MAX_RPM, profile, backRightState) / M_CHASSIS_MAX_RPM;
+	chassis.backLeft = calculatePID(get_chassis_motor_measure_point(3)->speed_rpm, chassis.backLeft * M_CHASSIS_MAX_RPM, profile, backLeftState) / M_CHASSIS_MAX_RPM;
+	chassis.frontLeft = calculatePID(get_chassis_motor_measure_point(4)->speed_rpm, chassis.frontLeft * M_CHASSIS_MAX_RPM, profile, frontLeftState) / M_CHASSIS_MAX_RPM;
 
     CAN_cmd_chassis((int16_t) (chassis.frontRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_M3508_CURRENT_SCALE));
 }
