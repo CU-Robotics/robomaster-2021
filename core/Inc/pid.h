@@ -8,8 +8,6 @@
 #include "constants.h"
 
 
-// Stores power values for the four chassis motors.
-// Chassis motor IDs are permanently set to 1-4, starting with the front right motor and going clockwise.
 typedef struct {
    float kP;
    float kI;
@@ -22,8 +20,10 @@ typedef struct {
     float lastError;
 } PIDState;
 
-// Calculates mecanum drive output state from controller input given an input in radians
 float calculatePID(float currentPosition, float setpoint, PIDProfile profile, PIDState *state);
+
+float calculatePID_SinFeedforward(float currentPosition, float setpoint, PIDProfile profile, PIDState *state);
+
 
 #ifdef __cplusplus
 }
