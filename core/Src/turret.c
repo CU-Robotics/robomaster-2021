@@ -51,17 +51,16 @@ void turretLoop(const RC_ctrl_t* control_input) {
 
         Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile, &yawState, &pitchState);
 
-        /*if(control_input->rc.s[0] == 1) {
-            // Run snail motor
-            fric_on((uint16_t)(M_MOTOR_SNAIL_OFFSET + M_MOTOR_SNAIL_MAX));
+        float feederSpeed = 0.0f;
+
+        if (control_input->mouse.press_l) {
+          fric_on((uint16_t) ((M_MOTOR_SNAIL_OFFSET + M_MOTOR_SNAIL_MAX) * M_SHOOTER_CURRENT_PERCENT));
+          feederSpeed = M_M2006_CURRENT_SCALE * M_FEEDER_CURRENT_PERCENT;
         } else {
-            // Turn off snail motor
-            fric_on((uint16_t)(M_MOTOR_SNAIL_OFFSET));
-        }*/
+          fric_on((uint16_t) (M_MOTOR_SNAIL_OFFSET));
+        }
 
-        //int16_t ballFeedSpeed = control_input->rc.ch[M_CONTROLLER_X_AXIS];
-
-        CAN_cmd_gimbal_working(turret.yaw * M_GM6020_VOLTAGE_SCALE, turret.pitch * M_M3508_CURRENT_SCALE, 0, 0);
+        CAN_cmd_gimbal_working(turret.yaw * M_GM6020_VOLTAGE_SCALE, turret.pitch * M_M3508_CURRENT_SCALE, feederSpeed, 0);
     } else {
 				//move pitch motor towards endstop
         CAN_cmd_gimbal_working(0, 4000, 0, 0);
