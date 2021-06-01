@@ -54,10 +54,10 @@ void turretLoop(const RC_ctrl_t* control_input) {
         float feederSpeed = 0.0f;
 
         if (control_input->mouse.press_l) {
-          fric_on((uint16_t) ((M_MOTOR_SNAIL_OFFSET + M_MOTOR_SNAIL_MAX) * M_SHOOTER_CURRENT_PERCENT));
+          fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE) * M_SHOOTER_CURRENT_PERCENT));
           feederSpeed = M_M2006_CURRENT_SCALE * M_FEEDER_CURRENT_PERCENT;
         } else {
-          fric_on((uint16_t) (M_MOTOR_SNAIL_OFFSET));
+          fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET));
         }
 
         CAN_cmd_gimbal_working(turret.yaw * M_GM6020_VOLTAGE_SCALE, turret.pitch * M_M3508_CURRENT_SCALE, feederSpeed, 0);
