@@ -55,7 +55,7 @@ void turretLoop(const RC_ctrl_t* control_input) {
 
         if (control_input->mouse.press_l) {
           fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE) * M_SHOOTER_CURRENT_PERCENT));
-          feederSpeed = M_M2006_CURRENT_SCALE * M_FEEDER_CURRENT_PERCENT;
+          feederSpeed = M_M2006_CURRENT_SCALE * -M_FEEDER_CURRENT_PERCENT;
         } else {
           fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET));
         }

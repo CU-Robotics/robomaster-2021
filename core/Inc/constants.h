@@ -18,8 +18,8 @@
 
 // -- PHYSICAL CONSTRAINTS --
 #define M_CHASSIS_MAX_RPM 400.0f                        // Chassis motors are capped at this speed
-#define M_SHOOTER_CURRENT_PERCENT 100.0f                // What percent power to run the shooter at. Used to keep the projectile exit speed within regulations.
-#define M_FEEDER_CURRENT_PERCENT 20.0f                  // What percent power to run the feeder
+#define M_SHOOTER_CURRENT_PERCENT 1.0f                // What percent power to run the shooter at. Used to keep the projectile exit speed within regulations.
+#define M_FEEDER_CURRENT_PERCENT 0.05f                  // What percent power to run the feeder
 
 // -- MOTORS --
 // M3508
