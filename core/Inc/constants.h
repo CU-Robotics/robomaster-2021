@@ -15,9 +15,8 @@
 #define M_CONTROLLER_X_AXIS 2
 #define M_CONTROLLER_Y_AXIS 3
 #define M_CONTROLLER_ROTATION_AXIS 1
-#define M_MOUSE_X_SCALE 10000.0f
-#define M_MOUSE_Y_SCALE 10000.0f
-#define M_MOUSE_Y_OFFSET (M_MOUSE_Y_SCALE/2)
+#define M_MOUSE_X_SCALE 3000.0f
+#define M_MOUSE_Y_SCALE 3000.0f
 
 // -- PHYSICAL CONSTRAINTS --
 #define M_CHASSIS_MAX_RPM 400.0f                        // Chassis motors are capped at this speed

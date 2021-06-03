@@ -57,6 +57,14 @@ void turretLoop(const RC_ctrl_t* control_input) {
 				//experimental mouse gimbal control
 				yawSetpoint += M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
         pitchSetpoint += M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
+			
+				//keep setpoints in -2pi to 2pi range for stability
+				if(yawSetpoint > 2*M_PI || yawSetpoint < -2*M_PI){
+					yawSetpoint = 0;
+				}
+				if(pitchSetpoint > 2*M_PI || pitchSetpoint < -2*M_PI){
+					pitchSetpoint = 0;
+				}
 
         Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile, &yawState, &pitchState);
 
@@ -65,7 +73,10 @@ void turretLoop(const RC_ctrl_t* control_input) {
         if (control_input->mouse.press_l) {
           fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE) * M_SHOOTER_CURRENT_PERCENT));
           feederSpeed = M_M2006_CURRENT_SCALE * -M_FEEDER_CURRENT_PERCENT;
-        } else {
+        } else if(control_input->mouse.press_r){
+					fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE) * M_SHOOTER_CURRENT_PERCENT));
+          feederSpeed = M_M2006_CURRENT_SCALE * M_FEEDER_CURRENT_PERCENT;
+				} else {
           fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET));
         }
 
