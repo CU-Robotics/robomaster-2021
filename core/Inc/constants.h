@@ -15,11 +15,15 @@
 #define M_CONTROLLER_X_AXIS 2
 #define M_CONTROLLER_Y_AXIS 3
 #define M_CONTROLLER_ROTATION_AXIS 1
+#define M_MOUSE_X_SCALE 10000.0f
+#define M_MOUSE_Y_SCALE 10000.0f
+#define M_MOUSE_Y_OFFSET (M_MOUSE_Y_SCALE/2)
 
 // -- PHYSICAL CONSTRAINTS --
 #define M_CHASSIS_MAX_RPM 400.0f                        // Chassis motors are capped at this speed
 #define M_SHOOTER_CURRENT_PERCENT 1.0f                // What percent power to run the shooter at. Used to keep the projectile exit speed within regulations.
 #define M_FEEDER_CURRENT_PERCENT 0.04f                  // What percent power to run the feeder
+#define M_FEEDFORWARD_PHASE 1.0f
 
 // -- MOTORS --
 // M3508

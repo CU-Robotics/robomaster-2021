@@ -64,7 +64,7 @@ float calculatePID_SinFeedforward(float currentPosition, float setpoint, PIDProf
 	state->errorBuffer[M_PID_INTEGRAL_BUFFER_SIZE] = error;
 
 	// Calculte feedforward
-	float feedforward = sin(currentPosition);
+	float feedforward = -sin(currentPosition + M_FEEDFORWARD_PHASE);
 		
 	// Calculate correction and return
     return error * profile.kP + derivative * profile.kD + integral * profile.kI + feedforward * profile.kF;

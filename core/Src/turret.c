@@ -22,15 +22,20 @@ int prevPitchPosition;
 int pitchHistory[M_ZERO_HARDSTOP_TIME_THRESHOLD];
 int pitchOffset;
 
+float yawSetpoint = 0;
+float pitchSetpoint = 0;
+float tempPitchPosition = 0;
+
 void turretInit() {
     // PID Profiles containing tuning parameters.
     yawProfile.kP = 16.0f / (8 * M_PI);
     yawProfile.kI = 0.00025f / (8 * M_PI);
     yawProfile.kD = 2.0f / (8 * M_PI);
 
-    pitchProfile.kP = 4.0f / (8 * M_PI);
-    pitchProfile.kI = 0.01f / (8 * M_PI);
+    pitchProfile.kP = 10.0f / (8 * M_PI);
+    pitchProfile.kI = 0.0f / (8 * M_PI);
     pitchProfile.kD = 0.0f / (8 * M_PI);
+		pitchProfile.kF = 4.20f / (8 * M_PI);
 	
     // PID States
     yawState.lastError = 0;
@@ -46,8 +51,12 @@ void turretInit() {
 
 void turretLoop(const RC_ctrl_t* control_input) {
     if (zeroed) {
-        float yawSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_X_AXIS] / (M_CONTROLLER_JOYSTICK_SCALE));
-        float pitchSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+        //float yawSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_X_AXIS] / (M_CONTROLLER_JOYSTICK_SCALE));
+        //float pitchSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+				
+				//experimental mouse gimbal control
+				yawSetpoint += M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
+        pitchSetpoint += M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
 
         Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile, &yawState, &pitchState);
 
@@ -91,12 +100,13 @@ Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfil
     pitchRotations += countRotationsM3508(pitchPosition, prevPitchPosition);
     prevPitchPosition = pitchPosition;
     pitchPosition = (pitchPosition + pitchRotations * M_M3508_ENCODER_SCALE - pitchOffset) * M_M3508_REDUCTION_RATIO;
-
+		tempPitchPosition = (2.0f * M_PI * pitchPosition) / M_M3508_ENCODER_SCALE;
+	
     Turret turret;
 
 		//calculate turret thrusts using PID with input of radians
     turret.yaw = calculatePID((2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE, yawAngle, yawPIDProfile, yawPIDState);
-    turret.pitch = calculatePID_SinFeedforward((2.0f * M_PI * pitchPosition * M_M3508_REDUCTION_RATIO) / M_M3508_ENCODER_SCALE, pitchAngle, pitchPIDProfile, pitchPIDState);
+    turret.pitch = calculatePID_SinFeedforward((2.0f * M_PI * pitchPosition) / M_M3508_ENCODER_SCALE, pitchAngle, pitchPIDProfile, pitchPIDState);
 
     return turret;
 }
