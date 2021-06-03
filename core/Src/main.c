@@ -91,15 +91,8 @@ int main(void) {
 
   /* Loop functions */
   while (1) {
-    //chassisLoop(local_rc_ctrl);
-    turretLoop(local_rc_ctrl);
-		HAL_Delay(5);
-		tempECD = get_trigger_motor_measure_point()->ecd;
-		for(int i = 0; i < 4; i++){
-			tempRPM[i] = get_chassis_motor_measure_point(i)->speed_rpm;
-		}
-		
-		//counter++;
+    chassisLoop(local_rc_ctrl);
+    //turretLoop(local_rc_ctrl);
 	}
 }
 
