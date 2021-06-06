@@ -58,20 +58,12 @@ void turretInit() {
 
 void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     if (zeroed) {
-        //float yawSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_X_AXIS] / (M_CONTROLLER_JOYSTICK_SCALE));
-        //float pitchSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+        // Float yawSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_X_AXIS] / (M_CONTROLLER_JOYSTICK_SCALE));
+        // Float pitchSetpoint = M_PI * (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
 				
-				//experimental mouse gimbal control
-				yawSetpoint += M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
-        pitchSetpoint += M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
-			
-				//keep setpoints in -2pi to 2pi range for stability
-				if(yawSetpoint > 2*M_PI || yawSetpoint < -2*M_PI){
-					yawSetpoint = 0;
-				}
-				if(pitchSetpoint > 2*M_PI || pitchSetpoint < -2*M_PI){
-					pitchSetpoint = 0;
-				}
+				// Experimental mouse gimbal control
+				yawSetpoint += deltaTime * M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
+        pitchSetpoint += deltaTime * M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
 
         Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile, &yawState, &pitchState);
 
