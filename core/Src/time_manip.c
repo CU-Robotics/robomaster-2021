@@ -1,4 +1,6 @@
 #include "time_manip.h"
+#include "stm32f4xx_hal.h"
+#include "constants.h"
 
 /* function with interval
  * @breif: Controls the time interval that a function takes to run
@@ -19,7 +21,7 @@ int function_with_interval(void (*function)(int*), int* parameters, int interval
     startTick = HAL_GetTick();              //get start time
     (*function)(parameters);                //run function
     endTick = HAL_GetTick();                //get end time
-    if (endTick-startTick > interval) {      //if the time it took to run the function is greater than desired interval
+    if (endTick-startTick > M_MASTER_LOOP_TIMEOUT) {      //if the time it took to run the function is greater than desired interval
         return -1;                            //return error -1
     } do {                                    
         endTick = HAL_GetTick();              //update the current time

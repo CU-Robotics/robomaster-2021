@@ -20,7 +20,9 @@
 
 // -- PHYSICAL CONSTRAINTS --
 #define M_CHASSIS_MAX_RPM 400.0f                        // Chassis motors are capped at this speed
-#define M_SHOOTER_CURRENT_PERCENT 1.0f                // What percent power to run the shooter at. Used to keep the projectile exit speed within regulations.
+#define M_SHOOTER_CURRENT_PERCENT 1.0f                  // What percent power to run the shooter at. Used to keep the projectile exit speed within regulations.
+#define M_SHOOTER_DELAY 30
+#define M_SHOOTER_UNJAM_PERIOD 200
 #define M_FEEDER_CURRENT_PERCENT 0.04f                  // What percent power to run the feeder
 #define M_FEEDFORWARD_PHASE 1.0f
 
@@ -41,7 +43,8 @@
 #define M_SNAIL_SPEED_OFFSET 1000.0f                    // PWM has no negative values; "0" starts at 1000 and values less than 1000 are negative
 
 // -- MISC --
-#define M_MASTER_LOOP_PERIOD 1.0f 					    // Code runs at 1000Hz (1ms period)
+#define M_MASTER_LOOP_PERIOD 1 					        // Code runs at 1000Hz (1ms period)
+#define M_MASTER_LOOP_TIMEOUT 3
 #define M_ZERO_HARDSTOP_TIME_THRESHOLD 50 			    // Motor must be held stationary for at least 50ms to detect a hardstop
 #define M_ZERO_HARDSTOP_RANGE_THRESHOLD M_PI / (128.0f) // All encoder values must be this close to each other in order to count as stationary
 #define M_PID_INTEGRAL_BUFFER_SIZE 100                  // 100ms

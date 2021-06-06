@@ -28,7 +28,7 @@ void chassisInit() {
 	frontLeftState.lastError = 0;
 }
 
-void chassisLoop(const RC_ctrl_t* control_input) {
+void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	float xThrottle = (control_input->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
     float yThrottle = (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
     float rotation = (control_input->rc.ch[M_CONTROLLER_ROTATION_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
