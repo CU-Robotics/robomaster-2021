@@ -92,11 +92,7 @@ int main(void) {
   turretInit();
 
   /* Run master loop function on a timer */
-<<<<<<< HEAD
-  function_with_interval(&masterLoop, NULL, M_MASTER_LOOP_PERIOD);
-=======
-  while (1) { function_with_interval(&masterLoop, NULL, M_MASTER_LOOP_INTERVAL) );
->>>>>>> c5c87cbcac9c918a15e7efc1cd89e28fd040fa77
+  while (1) { function_with_interval(&masterLoop, NULL, M_MASTER_LOOP_INTERVAL) };
 }
 
 /* Loop functions */
