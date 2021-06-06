@@ -70,22 +70,22 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 		
 		
 		//keep setpoints in -2pi to 2pi range for stability
-				if(yawSetpoint > 2*M_PI || yawSetpoint < -2*M_PI){
-					yawSetpoint = 0;
-				}
+    if(yawSetpoint > 2*M_PI || yawSetpoint < -2*M_PI){
+      yawSetpoint = 0;
+    }
 				
     // Left Quickturn
-    if ((control_input->key.v & Z_BITMASK) && !leftQuickturnAlreadyPressed) {
+    if ((control_input->key.v & M_Z_BITMASK) && !leftQuickturnAlreadyPressed) {
       yawSetpoint -= (M_PI / 2.0f);
       leftQuickturnAlreadyPressed = true;
-    } else {
+    } else if (!(control_input->key.v & M_Z_BITMASK)) {
       leftQuickturnAlreadyPressed = false;
     }
     // Right Quickturn
-    if ((control_input->key.v & X_BITMASK) && !rightQuickturnAlreadyPressed) {
+    if ((control_input->key.v & M_X_BITMASK) && !rightQuickturnAlreadyPressed) {
       yawSetpoint += (M_PI / 2.0f);
       rightQuickturnAlreadyPressed = true;
-    } else {
+    } else if (!(control_input->key.v & M_X_BITMASK)) {
       rightQuickturnAlreadyPressed = false;
     }
 

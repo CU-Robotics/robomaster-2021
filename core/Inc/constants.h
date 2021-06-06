@@ -50,9 +50,9 @@
 #define M_PID_INTEGRAL_BUFFER_SIZE 100                  // 100ms
 
 // -- BITMASKS -- 
-#define Z_BITMASK BIT11
-#define X_BITMASK BIT12
-#define R_BITMASK BIT8
+#define M_Z_BITMASK BIT11
+#define M_X_BITMASK BIT12
+#define M_R_BITMASK BIT8
 
 #define BIT0  0x0001
 #define BIT1  0x0002
@@ -70,6 +70,7 @@
 #define BIT13 0x2000
 #define BIT14 0x4000
 #define BIT15 0x8000
+
 #ifdef __cplusplus
 }
 #endif
