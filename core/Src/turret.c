@@ -75,14 +75,14 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 				}
 				
     // Left Quickturn
-    if (control_input->key.v[z] && !leftQuickturnAlreadyPressed) {
+    if ((control_input->key.v & Z_BITMASK) && !leftQuickturnAlreadyPressed) {
       yawSetpoint -= (M_PI / 2.0f);
       leftQuickturnAlreadyPressed = true;
     } else {
       leftQuickturnAlreadyPressed = false;
     }
     // Right Quickturn
-    if (control_input->key.v[x] && !rightQuickturnAlreadyPressed) {
+    if ((control_input->key.v & X_BITMASK) && !rightQuickturnAlreadyPressed) {
       yawSetpoint += (M_PI / 2.0f);
       rightQuickturnAlreadyPressed = true;
     } else {
@@ -106,7 +106,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     } else if(control_input->mouse.press_r){
       fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE) * M_SHOOTER_CURRENT_PERCENT));
     // Unjam
-    } else if (control_input->key.v[8]) {
+    } else if (control_input->key.v & R_BITMASK) {
       if (unjamTracker >= M_SHOOTER_UNJAM_PERIOD || unjamTracker <= -M_SHOOTER_UNJAM_PERIOD)
         unjamDirection = -unjamDirection;
       fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE * unjamDirection) * M_SHOOTER_CURRENT_PERCENT));
