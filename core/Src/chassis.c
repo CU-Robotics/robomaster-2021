@@ -18,8 +18,8 @@ PIDState frontLeftState;
 
 void chassisInit() {
     // PID Profiles containing tuning parameters.
-    profile.kP = 0.10f;
-    profile.kI = 0.00f;
+    profile.kP = 0.00040f;
+    profile.kI = 0.0f;
     profile.kD = 0.0f;
 
 	frontRightState.lastError = 0;
@@ -65,10 +65,10 @@ Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottl
 
 	// Invert right side to make "forward" consistent for all motors.
 	Chassis chassis;
-	chassis.frontRight = -frontRight;
-	chassis.frontLeft = frontLeft;
-	chassis.backRight = -backRight;
-	chassis.backLeft = backLeft;
+	chassis.frontRight = frontRight;
+	chassis.frontLeft = -frontLeft;
+	chassis.backRight = backRight;
+	chassis.backLeft = -backLeft;
 
 	return chassis;
 }

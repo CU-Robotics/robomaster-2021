@@ -36,11 +36,11 @@ void turretInit() {
   // PID Profiles containing tuning parameters.
   yawProfile.kP = 16.0f / (8 * M_PI);
   yawProfile.kI = 0.00025f / (8 * M_PI);
-  yawProfile.kD = 2.0f / (8 * M_PI);
+  yawProfile.kD = 4.0f / (8 * M_PI);
 
-  pitchProfile.kP = 10.0f / (8 * M_PI);
+  pitchProfile.kP = 50.0f / (8 * M_PI);
   pitchProfile.kI = 0.0f / (8 * M_PI);
-  pitchProfile.kD = 0.0f / (8 * M_PI);
+  pitchProfile.kD = 5.0f / (8 * M_PI);
   pitchProfile.kF = 4.20f / (8 * M_PI);
 
   // PID States
@@ -67,7 +67,13 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     // Experimental mouse gimbal control
     yawSetpoint += deltaTime * M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
     pitchSetpoint += deltaTime * M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
-
+		
+		
+		//keep setpoints in -2pi to 2pi range for stability
+				if(yawSetpoint > 2*M_PI || yawSetpoint < -2*M_PI){
+					yawSetpoint = 0;
+				}
+				
     // Left Quickturn
     if (control_input->key.v == '1' && !leftQuickturnAlreadyPressed) {
       yawSetpoint -= (M_PI / 2.0f);
