@@ -43,8 +43,8 @@
 #define M_SNAIL_SPEED_OFFSET 1000.0f                    // PWM has no negative values; "0" starts at 1000 and values less than 1000 are negative
 
 // -- MISC --
-#define M_MASTER_LOOP_PERIOD 1 					        // Code runs at 1000Hz (1ms period)
-#define M_MASTER_LOOP_TIMEOUT 3
+#define M_MASTER_LOOP_PERIOD 2 					        // Code runs at 500Hz (2ms period)
+#define M_MASTER_LOOP_TIMEOUT 5
 #define M_ZERO_HARDSTOP_TIME_THRESHOLD 50 			    // Motor must be held stationary for at least 50ms to detect a hardstop
 #define M_ZERO_HARDSTOP_RANGE_THRESHOLD M_PI / (128.0f) // All encoder values must be this close to each other in order to count as stationary
 #define M_PID_INTEGRAL_BUFFER_SIZE 100                  // 100ms
