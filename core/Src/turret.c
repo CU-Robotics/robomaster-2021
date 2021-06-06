@@ -69,14 +69,14 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     pitchSetpoint += deltaTime * M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
 
     // Left Quickturn
-    if (control_input->key.v['1'] && !leftQuickturnAlreadyPressed) {
+    if (control_input->key.v == '1' && !leftQuickturnAlreadyPressed) {
       yawSetpoint -= (M_PI / 2.0f);
       leftQuickturnAlreadyPressed = true;
     } else {
       leftQuickturnAlreadyPressed = false;
     }
     // Right Quickturn
-    if (control_input->key.v['2'] && !rightQuickturnAlreadyPressed) {
+    if (control_input->key.v == '2' && !rightQuickturnAlreadyPressed) {
       yawSetpoint += (M_PI / 2.0f);
       rightQuickturnAlreadyPressed = true;
     } else {
@@ -100,7 +100,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     } else if(control_input->mouse.press_r){
       fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE) * M_SHOOTER_CURRENT_PERCENT));
     // Unjam
-    } else if (control_input->key.v['r']) {
+    } else if (control_input->key.v == 'r') {
       if (unjamTracker >= M_SHOOTER_UNJAM_PERIOD || unjamTracker <= -M_SHOOTER_UNJAM_PERIOD)
         unjamDirection = -unjamDirection;
       fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE * unjamDirection) * M_SHOOTER_CURRENT_PERCENT));
@@ -110,7 +110,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     } else {
       fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET));
       flywheelSpinupTracker -= deltaTime;
-      if (flywheelSpinupTracker < 0) { flywheelSpinupTracker = 0 };
+      if (flywheelSpinupTracker < 0) { flywheelSpinupTracker = 0; };
       unjamTracker = 0;
       unjamDirection = 1;
     }

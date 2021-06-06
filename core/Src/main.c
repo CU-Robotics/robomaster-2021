@@ -34,6 +34,7 @@
 #include "chassis.h"
 #include "turret.h"
 #include "pid.h"
+#include "constants.h"
 
 #include "time_manip.h"
 
@@ -41,6 +42,8 @@
 void SystemClock_Config(void);
 
 const RC_ctrl_t *local_rc_ctrl;
+
+void masterLoop(void);
 
 /**
   * @brief  The application entry point.
@@ -89,11 +92,11 @@ int main(void) {
   turretInit();
 
   /* Run master loop function on a timer */
-  function_with_interval(&masterLoop, NULL, M_MASTER_LOOP_INTERVAL);
+  function_with_interval(&masterLoop, NULL, M_MASTER_LOOP_PERIOD);
 }
 
 /* Loop functions */
-void masterLoop() {
+void masterLoop(void) {
   uint32_t currentTick = HAL_GetTick();
   int deltaTime = currentTick - prevTick;
 
