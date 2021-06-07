@@ -106,7 +106,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     } else if(control_input->mouse.press_r){
       fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE) * M_SHOOTER_CURRENT_PERCENT));
     // Unjam
-    } else if (control_input->key.v & R_BITMASK) {
+    } else if (control_input->key.v & M_R_BITMASK) {
       if (unjamTracker >= M_SHOOTER_UNJAM_PERIOD || unjamTracker <= -M_SHOOTER_UNJAM_PERIOD)
         unjamDirection = -unjamDirection;
       fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE * unjamDirection) * M_SHOOTER_CURRENT_PERCENT));
