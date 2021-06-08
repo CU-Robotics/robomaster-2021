@@ -5,7 +5,8 @@
 #include "utils.h"
 #include "constants.h"
 
-float calculatePID(float currentPosition, float setpoint, PIDProfile profile, PIDState *state) {
+//PID function for control with looping
+float calculatePID_Positional(float currentPosition, float setpoint, PIDProfile profile, PIDState *state) {
 	float error;
 
 	// Calculate error
@@ -35,7 +36,7 @@ float calculatePID(float currentPosition, float setpoint, PIDProfile profile, PI
 	// Calculate correction and return
     return error * profile.kP + derivative * profile.kD + integral * profile.kI + profile.kF;
 }
-
+//PID function for control with looping and sinusoidal feed forward
 float calculatePID_SinFeedforward(float currentPosition, float setpoint, PIDProfile profile, PIDState *state) {
 	float error;
 
@@ -68,4 +69,24 @@ float calculatePID_SinFeedforward(float currentPosition, float setpoint, PIDProf
 		
 	// Calculate correction and return
     return error * profile.kP + derivative * profile.kD + integral * profile.kI + feedforward * profile.kF;
+}
+
+//PID function for control without looping
+float calculatePID_Speed(float currentPosition, float setpoint, PIDProfile profile, PIDState *state) {
+	//Calculate Error
+	float error = setpoint - currentPosition;
+	
+	// Calculate derivative
+	float derivative = error - state->lastError;
+	
+	// Calculate integral
+	float integral = error;
+	for(int i = 0; i < M_PID_INTEGRAL_BUFFER_SIZE; i++){
+		state->errorBuffer[i] = state->errorBuffer[i+1];
+		integral += state->errorBuffer[i];
+	}
+	state->errorBuffer[M_PID_INTEGRAL_BUFFER_SIZE] = error;
+		
+	// Calculate correction and return
+    return error * profile.kP + derivative * profile.kD + integral * profile.kI + profile.kF;
 }

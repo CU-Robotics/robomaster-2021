@@ -20,9 +20,11 @@ typedef struct {
     float lastError;
 } PIDState;
 
-float calculatePID(float currentPosition, float setpoint, PIDProfile profile, PIDState *state);
+float calculatePID_Positional(float currentPosition, float setpoint, PIDProfile profile, PIDState *state);
 
 float calculatePID_SinFeedforward(float currentPosition, float setpoint, PIDProfile profile, PIDState *state);
+
+float calculatePID_Speed(float currentPosition, float setpoint, PIDProfile profile, PIDState *state);
 
 
 #ifdef __cplusplus

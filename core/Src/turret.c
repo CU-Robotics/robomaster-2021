@@ -159,7 +159,7 @@ Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfil
 
   // Calculate turret thrusts using PID with input of radians
   Turret turret;
-  turret.yaw = calculatePID((2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE, yawAngle, yawPIDProfile, yawPIDState);
+  turret.yaw = calculatePID_Positional((2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE, yawAngle, yawPIDProfile, yawPIDState);
   turret.pitch = calculatePID_SinFeedforward((2.0f * M_PI * pitchPosition) / M_M3508_ENCODER_SCALE, pitchAngle, pitchPIDProfile, pitchPIDState);
 
   return turret;

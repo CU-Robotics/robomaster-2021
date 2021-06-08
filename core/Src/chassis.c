@@ -10,17 +10,21 @@
 
 #include "chassis.h"
 
-PIDProfile profile;
+PIDProfile chassisPID_Profile;
 PIDState frontRightState;
 PIDState backRightState;
 PIDState backLeftState;
 PIDState frontLeftState;
 
+float xThrottle = 0;
+float yThrottle = 0;
+float rotation = 0;
+
 void chassisInit() {
     // PID Profiles containing tuning parameters.
-    profile.kP = 0.00040f;
-    profile.kI = 0.0f;
-    profile.kD = 0.0f;
+    chassisPID_Profile.kP = 0.0001f;
+    chassisPID_Profile.kI = 0.000001f;
+    chassisPID_Profile.kD = 0.0f;
 
 	frontRightState.lastError = 0;
     backRightState.lastError = 0;
@@ -29,21 +33,32 @@ void chassisInit() {
 }
 
 void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
-	float xThrottle = (control_input->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
-    float yThrottle = (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
-    float rotation = (control_input->rc.ch[M_CONTROLLER_ROTATION_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+	//Collect Controller input
+	xThrottle = (control_input->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+  yThrottle = (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+  rotation = (control_input->rc.ch[M_CONTROLLER_ROTATION_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
 
-    Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
-	chassis.frontRight = calculatePID(get_chassis_motor_measure_point(1)->speed_rpm * M_M3508_REDUCTION_RATIO, chassis.frontRight * M_CHASSIS_MAX_RPM, profile, &frontRightState);
-	chassis.backRight = calculatePID(get_chassis_motor_measure_point(2)->speed_rpm * M_M3508_REDUCTION_RATIO, chassis.backRight * M_CHASSIS_MAX_RPM * (1 / M_M3508_REDUCTION_RATIO), profile, &backRightState);
-	chassis.backLeft = calculatePID(get_chassis_motor_measure_point(3)->speed_rpm * M_M3508_REDUCTION_RATIO, chassis.backLeft * M_CHASSIS_MAX_RPM * (1 / M_M3508_REDUCTION_RATIO), profile, &backLeftState);
-	chassis.frontLeft = calculatePID(get_chassis_motor_measure_point(4)->speed_rpm * M_M3508_REDUCTION_RATIO, chassis.frontLeft * M_CHASSIS_MAX_RPM * (1 / M_M3508_REDUCTION_RATIO), profile, &frontLeftState);
+	//Calculate mechanum wheel velocities for target vector
+  Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
+	
+	
+	//convert read RPM (before gearing) to true output RPM
+	float speed_1 = get_chassis_motor_measure_point(1)->speed_rpm * M_M3508_REDUCTION_RATIO;
+	float speed_2 = get_chassis_motor_measure_point(2)->speed_rpm * M_M3508_REDUCTION_RATIO;
+	float speed_3 = get_chassis_motor_measure_point(3)->speed_rpm * M_M3508_REDUCTION_RATIO;
+	float speed_4 = get_chassis_motor_measure_point(4)->speed_rpm * M_M3508_REDUCTION_RATIO;
+	
+	//Calculate PID based on current state, and desired wheel velocities
+	chassis.frontRight = calculatePID_Speed(speed_1, chassis.frontRight * M_CHASSIS_MAX_RPM, chassisPID_Profile, &frontRightState);
+	chassis.backRight = calculatePID_Speed(speed_2, chassis.backRight * M_CHASSIS_MAX_RPM, chassisPID_Profile, &backRightState);
+	chassis.backLeft = calculatePID_Speed(speed_3, chassis.backLeft * M_CHASSIS_MAX_RPM, chassisPID_Profile, &backLeftState);
+	chassis.frontLeft = calculatePID_Speed(speed_4, chassis.frontLeft * M_CHASSIS_MAX_RPM, chassisPID_Profile, &frontLeftState);
 
-    CAN_cmd_chassis((int16_t) (chassis.frontRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_M3508_CURRENT_SCALE));
+  CAN_cmd_chassis((int16_t) (chassis.frontRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_M3508_CURRENT_SCALE));
 }
 
 Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottle) {
-	// Calculate the power for each wheel (on a scale of -1.0 to 1.0)
+	// Calculate the power for each wheel
 	float frontRight = xThrottle - yThrottle - rotationThrottle;
 	float frontLeft = xThrottle + yThrottle + rotationThrottle;
 	float backRight = xThrottle + yThrottle - rotationThrottle;
@@ -55,20 +70,21 @@ Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottl
 	if (absValueFloat(backRight) > max) max = absValueFloat(backRight);
 	if (absValueFloat(backLeft) > max) max = absValueFloat(backLeft);
 
+	//Normalize power to scale from -1 to 1
 	// If the max value is greater than 1.0, divide all the motor power variables by the max value, forcing all magnitudes to be less than or equal to 1.0.
 	if (max > 1.0f) {
-		frontRight /= -max;
+		frontRight /= max;
 		frontLeft /= max;
-		backRight /= -max;
+		backRight /= max;
 		backLeft /= max;
 	}
 
 	// Invert right side to make "forward" consistent for all motors.
 	Chassis chassis;
-	chassis.frontRight = frontRight;
-	chassis.frontLeft = -frontLeft;
-	chassis.backRight = backRight;
-	chassis.backLeft = -backLeft;
+	chassis.frontRight = -frontRight;
+	chassis.frontLeft = frontLeft;
+	chassis.backRight = -backRight;
+	chassis.backLeft = backLeft;
 
 	return chassis;
 }

@@ -45,6 +45,9 @@ const RC_ctrl_t *local_rc_ctrl;
 
 void masterLoop(void);
 
+//Testing Variables
+float speedRead = 0.0f;
+
 /**
   * @brief  The application entry point.
   * @retval int
@@ -102,7 +105,10 @@ void masterLoop(void) {
 
   chassisLoop(local_rc_ctrl, deltaTime);
   turretLoop(local_rc_ctrl, deltaTime);
-  
+	
+	//debug line
+  speedRead = get_chassis_motor_measure_point(1)->speed_rpm;
+	
   prevTick = currentTick;
 }
 
