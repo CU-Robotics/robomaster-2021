@@ -22,7 +22,7 @@ float rotation = 0;
 
 void chassisInit() {
     // PID Profiles containing tuning parameters.
-    chassisPID_Profile.kP = 0.0001f;
+    chassisPID_Profile.kP = 0.0008f;
     chassisPID_Profile.kI = 0.000001f;
     chassisPID_Profile.kD = 0.0f;
 

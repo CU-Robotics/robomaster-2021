@@ -23,7 +23,7 @@
 #define M_SHOOTER_CURRENT_PERCENT 1.0f                  	// What percent power to run the shooter at. Used to keep the projectile exit speed within regulations.
 #define M_SHOOTER_DELAY 30
 #define M_SHOOTER_UNJAM_PERIOD 200
-#define M_FEEDER_CURRENT_PERCENT 0.04f                  	// What percent power to run the feeder
+#define M_FEEDER_CURRENT_PERCENT 0.08f                  	// What percent power to run the feeder
 #define M_FEEDFORWARD_PHASE 1.0f
 
 // -- MOTORS --
