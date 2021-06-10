@@ -26,6 +26,21 @@
 #define M_FEEDER_CURRENT_PERCENT 0.08f                  	// What percent power to run the feeder
 #define M_FEEDFORWARD_PHASE 1.0f
 
+// -- GAME CONFIGURATION --
+// Chassis
+#define CONF_CHASSIS_CURRENT_LIMIT_0 = (40.0f / M_BATTERY_VOLTAGE)                                                                  // Level 0
+#define CONF_CHASSIS_CURRENT_LIMIT_POW = { (60.0f / M_BATTERY_VOLTAGE), (80.0f / M_BATTERY_VOLTAGE), (100.0f / M_BATTERY_VOLTAGE) } // Power-Focused Chassis
+#define CONF_CHASSIS_CURRENT_LIMIT_HP = { (45.0f / M_BATTERY_VOLTAGE), (50.0f / M_BATTERY_VOLTAGE), (55.0f / M_BATTERY_VOLTAGE) }   // HP-Focused Chassis
+// Shooter
+#define CONF_SHOOTER_SPEED_PERCENTAGE_0 = 0.70f                               // Level 0
+#define CONF_SHOOTER_SPEED_PERCENTAGE_BURST = { (0.70f), (0.70f), (0.70f) }   // Burst-Focused Shooter
+#define CONF_SHOOTER_SPEED_PERCENTAGE_COOLING = { (0.70f), (0.80f), (0.80f) } // Cooling-Focused Shooter
+#define CONF_SHOOTER_SPEED_PERCENTAGE_SPEED = { (0.90f), (0.90f), (0.90f) }   //Projectile Speed-Focused Shooter
+// Feeder
+#define CONF_SHOOTER_FIRERATE_BURST = 0.04f             // Feeder speed at high
+#define CONF_SHOOTER_FIRERATE_LOW = 0.015f
+#define CONF_SHOOTER_FIRERATE_HIGH = 0.025f
+
 // -- MOTORS --
 // M3508
 #define M_M3508_CURRENT_SCALE 16384.0f                  	// Scale of M3508 motor input, where this value is max current
