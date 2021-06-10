@@ -23,6 +23,7 @@
 #include "dma.h"
 #include "tim.h"
 #include "usart.h"
+#include "spi.h"
 #include "math.h"
 
 #include "remote_control.h"
@@ -30,6 +31,7 @@
 #include "bsp_can.h"
 #include "CAN_receive.h"
 #include "bsp_fric.h"
+#include "BMI088driver.h"
 
 #include "chassis.h"
 #include "turret.h"
@@ -44,6 +46,9 @@ void SystemClock_Config(void);
 const RC_ctrl_t *local_rc_ctrl;
 
 void masterLoop(void);
+
+//Global IMU Values
+fp32 gyro[3], accel[3], temp;
 
 //Testing Variables
 float speedRead = 0.0f;
@@ -65,10 +70,12 @@ int main(void) {
   MX_CAN1_Init();
   MX_CAN2_Init();
 	MX_DMA_Init();
+  MX_SPI1_Init();
 	MX_USART1_UART_Init();
   MX_USART3_UART_Init();
   MX_TIM8_Init();
   MX_TIM1_Init();
+  MX_TIM10_Init();
   
   // Configure PWM and CAN communication
 	fric_off();
@@ -105,6 +112,8 @@ void masterLoop(void) {
 
   chassisLoop(local_rc_ctrl, deltaTime);
   turretLoop(local_rc_ctrl, deltaTime);
+	//read IMU
+	BMI088_read(gyro, accel, &temp);
 	
 	//debug line
   speedRead = get_chassis_motor_measure_point(1)->speed_rpm;

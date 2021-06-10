@@ -1,12 +1,12 @@
 /**
   ******************************************************************************
-  * File Name          : TIM.h
+  * File Name          : SPI.h
   * Description        : This file provides code for the configuration
-  *                      of the TIM instances.
+  *                      of the SPI instances.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under BSD 3-Clause license,
@@ -17,8 +17,8 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __tim_H
-#define __tim_H
+#ifndef __spi_H
+#define __spi_H
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -30,20 +30,14 @@
 
 /* USER CODE END Includes */
 
-extern TIM_HandleTypeDef htim1;
-extern TIM_HandleTypeDef htim8;
-extern TIM_HandleTypeDef htim10;
+extern SPI_HandleTypeDef hspi1;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
-void MX_TIM1_Init(void);
-void MX_TIM8_Init(void);
-void MX_TIM10_Init(void);
-                        
-void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-                                        
+void MX_SPI1_Init(void);
+
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */
@@ -51,7 +45,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 #ifdef __cplusplus
 }
 #endif
-#endif /*__ tim_H */
+#endif /*__ spi_H */
 
 /**
   * @}
