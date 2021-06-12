@@ -11,7 +11,6 @@
 //Packet information and offsets
 #define HEADER_length 	0x05
 #define SOF_data 				0xA5
-#define SOF_offset 			0x0000
 #define DL_offset 			0x0001
 #define SEQ_offset 			0x0003
 #define CRC8_offset 		0x0004
@@ -24,6 +23,7 @@
 #define CRC16_length  	0x0002
 
 #define PACKET_MAX_LENGTH 0x0030
+#define PACKET_MIN_LENGTH 0x0009
 
 //Command IDs
 #define CMD_ID_game_status 				0x0001

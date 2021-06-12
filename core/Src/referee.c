@@ -14,31 +14,40 @@ void refereeLoop(void){
 }
 
 uint8_t REF_Parse_Packet(uint8_t *packet_Data, referee_data_t *ref_data){
+	/* SEARCH FOR HEADER */
+	uint8_t SOF_Offset = 0;
+	for(SOF_Offset = 0; SOF_Offset < PACKET_MAX_LENGTH - PACKET_MIN_LENGTH; SOF_Offset++){
+		//check if byte matches Start Of Frame (SOF)
+		if(packet_Data[SOF_Offset] == SOF_data)
+			break;
+		
+		//if loop reaches end without find start of frame, return error
+		if(SOF_Offset == PACKET_MAX_LENGTH - PACKET_MIN_LENGTH - 1)
+			return 0U;
+	}	
 	/* PROCESS HEADER (the first five bytes) */
 	uint8_t Header_Frame[5];
 	
-	//check if Start Of Frame (SOF) matches
-	Header_Frame[SOF_offset] = packet_Data[SOF_offset];
-	if(packet_Data[SOF_offset] != SOF_data)
-		return 0U;
+	
+	Header_Frame[0] = packet_Data[SOF_Offset];
 	
 	
 	//reads length of data from the next two bytes
-	Header_Frame[DL_offset] = packet_Data[DL_offset];
-	uint16_t data_length = ((uint16_t)packet_Data[DL_offset]) >> 8 | (uint16_t)packet_Data[DL_offset + 1];
+	Header_Frame[DL_offset] = packet_Data[SOF_Offset + DL_offset];
+	uint16_t data_length = ((uint16_t)packet_Data[SOF_Offset + DL_offset]) >> 8 | (uint16_t)packet_Data[SOF_Offset + DL_offset + 1];
 	
 	//reads sequence number
 	//wtf is sequence?
-	Header_Frame[SEQ_offset] = packet_Data[SEQ_offset];
-	uint8_t sequence_number = packet_Data[SEQ_offset];
+	Header_Frame[SEQ_offset] = packet_Data[SOF_Offset + SEQ_offset];
+	uint8_t sequence_number = packet_Data[SOF_Offset + SEQ_offset];
 	
 	//Verify with CRC8
-	Header_Frame[CRC8_offset] = packet_Data[CRC8_offset];
+	Header_Frame[CRC8_offset] = packet_Data[SOF_Offset + CRC8_offset];
 	if(!Verify_CRC8_Check_Sum(Header_Frame, HEADER_length))
 		return 0U;
 	
 	/* PROCESS CMD ID */
-	uint16_t CMD_ID = ((uint16_t)packet_Data[CMD_ID_offset]) >> 8 | (uint16_t)packet_Data[CMD_ID_offset + 1];
+	uint16_t CMD_ID = ((uint16_t)packet_Data[SOF_Offset + CMD_ID_offset]) >> 8 | (uint16_t)packet_Data[SOF_Offset + CMD_ID_offset + 1];
 	
 	/* CONFIRM CRC16 */
 	//Needs to happen before loading data into the ref system struct
@@ -95,7 +104,7 @@ uint8_t REF_Parse_Packet(uint8_t *packet_Data, referee_data_t *ref_data){
 	
 	//fills the packed struct with data
 	for(int i = 0; i < data_length; i++)
-		Target_Struct[i] = packet_Data[DATA_offset + i];
+		Target_Struct[i] = packet_Data[SOF_Offset + DATA_offset + i];
 	
 	//return true on successful processing!
 	return 1U;
