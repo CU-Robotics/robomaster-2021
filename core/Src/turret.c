@@ -64,14 +64,22 @@ void turretInit() {
 void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
   if (zeroed) {
     /* Turret Code */
-    // Experimental mouse gimbal control
+    // Mouse control
     yawSetpoint += deltaTime * M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
     pitchSetpoint += deltaTime * M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
 		
-		
-		//keep setpoints in -2pi to 2pi range for stability
-    if(yawSetpoint > 2*M_PI || yawSetpoint < -2*M_PI){
-      yawSetpoint = 0;
+		// Keep yaw setpoints in -2pi to 2pi range for stability
+    if (yawSetpoint > 2*M_PI) {
+      yawSetpoint -= 2*M_PI;
+    } else if (yawSetpoint < -2*M_PI) {
+      yawSetpoint += 2*M_PI;
+    }
+
+    // Apply pitch soft limits
+    if (pitchSetpoint < M_TURRET_PITCH_LOWER_LIMIT) {
+      pitchSetpoint = M_TURRET_PITCH_LOWER_LIMIT;
+    } else if (pitchSetpoint < M_TURRET_PITCH_UPPER_LIMIT) {
+      pitchSetpoint = M_TURRET_PITCH_UPPER_LIMIT;
     }
 				
     // Left Quickturn
@@ -99,7 +107,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
       fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE) * M_SHOOTER_CURRENT_PERCENT));
       flywheelSpinupTracker += deltaTime;
       if (flywheelSpinupTracker >= M_SHOOTER_DELAY) {
-        feederSpeed = M_M2006_CURRENT_SCALE * -M_FEEDER_CURRENT_PERCENT;
+        feederSpeed = M_M2006_CURRENT_SCALE * -CONF_SHOOTER_FIRERATE_BURST;
         flywheelSpinupTracker = M_SHOOTER_DELAY;
       }
     // Prespin
@@ -110,7 +118,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
       if (unjamTracker >= M_SHOOTER_UNJAM_PERIOD || unjamTracker <= -M_SHOOTER_UNJAM_PERIOD)
         unjamDirection = -unjamDirection;
       fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE * unjamDirection) * M_SHOOTER_CURRENT_PERCENT));
-      feederSpeed = M_M2006_CURRENT_SCALE * M_FEEDER_CURRENT_PERCENT * unjamDirection;
+      feederSpeed = M_M2006_CURRENT_SCALE * M_FEEDER_UNJAM_CURRENT_PERCENT * unjamDirection;
       unjamTracker += unjamDirection * deltaTime;
     // Base State
     } else {

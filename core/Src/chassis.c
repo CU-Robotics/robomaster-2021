@@ -34,13 +34,30 @@ void chassisInit() {
 
 void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	//Collect Controller input
-	xThrottle = (control_input->rc.ch[M_CONTROLLER_X_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
-  yThrottle = (control_input->rc.ch[M_CONTROLLER_Y_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
-  rotation = (control_input->rc.ch[M_CONTROLLER_ROTATION_AXIS] / M_CONTROLLER_JOYSTICK_SCALE);
+	yThrottle = 0.0f;
+	if (control_input->key.v & M_W_BITMASK) {
+		yThrottle += 1.0f;
+	}
+	if (control_input->key.v & M_S_BITMASK) {
+		yThrottle -= 1.0f;
+	}
+	xThrottle = 0.0f;
+	if (control_input->key.v & M_A_BITMASK) {
+		xThrottle -= 1.0f;
+	}
+	if (control_input->key.v & M_D_BITMASK) {
+		xThrottle += 1.0f;
+	}
+	rotation = 0.0f;
+	if (control_input->key.v & M_Q_BITMASK) {
+		rotation -= 1.0f;
+	}
+	if (control_input->key.v & M_E_BITMASK) {	
+		rotation += 1.0f;
+	}
 
 	//Calculate mechanum wheel velocities for target vector
-  Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
-	
+ 	Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
 	
 	//convert read RPM (before gearing) to true output RPM
 	float speed_1 = get_chassis_motor_measure_point(1)->speed_rpm * M_M3508_REDUCTION_RATIO;
@@ -54,7 +71,9 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	chassis.backLeft = calculatePID_Speed(speed_3, chassis.backLeft * M_CHASSIS_MAX_RPM, chassisPID_Profile, &backLeftState);
 	chassis.frontLeft = calculatePID_Speed(speed_4, chassis.frontLeft * M_CHASSIS_MAX_RPM, chassisPID_Profile, &frontLeftState);
 
-  CAN_cmd_chassis((int16_t) (chassis.frontRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_M3508_CURRENT_SCALE));
+	chassis.frontRight = chassis.frontRight * M_M3508_CURRENT_SCALE * target power / power sum
+
+ 	CAN_cmd_chassis((int16_t) (chassis.frontRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_M3508_CURRENT_SCALE));
 }
 
 Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottle) {

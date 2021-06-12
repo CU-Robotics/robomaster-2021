@@ -19,12 +19,14 @@
 #define M_MOUSE_Y_SCALE 3000.0f
 
 // -- PHYSICAL CONSTRAINTS --
-#define M_CHASSIS_MAX_RPM 400.0f													// Chassis motors are capped at this speed
+#define M_CHASSIS_MAX_RPM 400.0f							// Chassis motors are capped at this speed
 #define M_SHOOTER_CURRENT_PERCENT 1.0f                  	// What percent power to run the shooter at. Used to keep the projectile exit speed within regulations.
-#define M_SHOOTER_DELAY 30
+#define M_SHOOTER_DELAY 60
 #define M_SHOOTER_UNJAM_PERIOD 200
-#define M_FEEDER_CURRENT_PERCENT 0.08f                  	// What percent power to run the feeder
+#define M_FEEDER_UNJAM_CURRENT_PERCENT 0.5f                // What percent power to run the feeder when unjaming it
 #define M_FEEDFORWARD_PHASE 1.0f
+#define M_TURRET_PITCH_LOWER_LIMIT -0.3
+#define M_TURRET_PITCH_UPPER_LIMIT 0.7
 
 // -- GAME CONFIGURATION --
 // Chassis
@@ -37,9 +39,9 @@
 #define CONF_SHOOTER_SPEED_PERCENTAGE_COOLING = { (0.70f), (0.80f), (0.80f) } // Cooling-Focused Shooter
 #define CONF_SHOOTER_SPEED_PERCENTAGE_SPEED = { (0.90f), (0.90f), (0.90f) }   //Projectile Speed-Focused Shooter
 // Feeder
-#define CONF_SHOOTER_FIRERATE_BURST = 0.04f             // Feeder speed at high
-#define CONF_SHOOTER_FIRERATE_LOW = 0.015f
-#define CONF_SHOOTER_FIRERATE_HIGH = 0.025f
+#define CONF_SHOOTER_FIRERATE_BURST = 0.04f                 // Feeder speed in burst mode
+#define CONF_SHOOTER_FIRERATE_HIGH = 0.03f                  // Feeder speed in high firerate mode
+#define CONF_SHOOTER_FIRERATE_LOW = 0.02f                   // Feeder speed at low firerate mode
 
 // -- MOTORS --
 // M3508
@@ -65,9 +67,17 @@
 #define M_PID_INTEGRAL_BUFFER_SIZE 100                 	  // 100ms
 
 // -- BITMASKS -- 
+#define M_W_BITMASH BIT0
+#define M_S_BITMASK BIT1
+#define M_A_BITMASK BIT2
+#define B_D_BITMASK BIT3
+#define B_SHIFT_BITMASK BIT4
+#define B_CTRL_BITMASK BIT5
+#define M_Q_BITMASK BIT6
+#define B_E_BITMASK BIT7
+#define M_R_BITMASK BIT8
 #define M_Z_BITMASK BIT11
 #define M_X_BITMASK BIT12
-#define M_R_BITMASK BIT8
 
 #define BIT0  0x0001
 #define BIT1  0x0002
