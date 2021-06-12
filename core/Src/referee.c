@@ -1,26 +1,105 @@
 #include "referee.h"
-#include "constants.h"
+#include "usart.h"
+#include "stm32f4xx_hal.h"
 
 //globally available ref variables
-ext_game_status_t 		REF_game_status;
-ext_game_result_t 		REF_game_result;
-ext_game_robot_HP_t 	REF_robot_HP;
-ext_dart_status_t 		REF_dart_status;
-ext_ICRA_buff_debuff_zone_status_t REF_debuff_status;
-ext_event_data_t			REF_event_data;
-ext_supply_projectile_action_t REF_projectile_action;
-ext_referee_warning_t	REF_warnings;
-ext_dart_remaining_time_t	REF_remaining_time;
-ext_game_robot_status_t REF_robot_status;
-ext_power_heat_data_t REF_heat_data;
-ext_game_robot_pos_t  REF_robot_pos;
-ext_buff_t						REF_buff;
-aerial_robot_energy_t REF_aerial_energy;
-ext_robot_hurt_t			REF_robot_hurt;
-ext_shoot_data_t			REF_shoot_data;
-ext_bullet_remaining_t REF_bullet_remaining;
-ext_rfid_status_t			REF_rfid_status;
-ext_dart_client_cmd_t REF_dart_client_cmd;
+referee_data_t REF_data;
+uint8_t REF_Packet_Data[PACKET_MAX_LENGTH];
+
+void refereeLoop(void){
+	//puts in interrupt recieve request
+	HAL_UART_Receive_IT(&huart1, REF_Packet_Data, PACKET_MAX_LENGTH);
+	//parses data
+	REF_Parse_Packet(REF_Packet_Data, &REF_data);
+}
+
+uint8_t REF_Parse_Packet(uint8_t *packet_Data, referee_data_t *ref_data){
+	/* PROCESS HEADER (the first five bytes) */
+	uint8_t Header_Frame[5];
+	
+	//check if Start Of Frame (SOF) matches
+	Header_Frame[SOF_offset] = packet_Data[SOF_offset];
+	if(packet_Data[SOF_offset] != SOF_data)
+		return 0U;
+	
+	
+	//reads length of data from the next two bytes
+	Header_Frame[DL_offset] = packet_Data[DL_offset];
+	uint16_t data_length = ((uint16_t)packet_Data[DL_offset]) >> 8 | (uint16_t)packet_Data[DL_offset + 1];
+	
+	//reads sequence number
+	//wtf is sequence?
+	Header_Frame[SEQ_offset] = packet_Data[SEQ_offset];
+	uint8_t sequence_number = packet_Data[SEQ_offset];
+	
+	//Verify with CRC8
+	Header_Frame[CRC8_offset] = packet_Data[CRC8_offset];
+	if(!Verify_CRC8_Check_Sum(Header_Frame, HEADER_length))
+		return 0U;
+	
+	/* PROCESS CMD ID */
+	uint16_t CMD_ID = ((uint16_t)packet_Data[CMD_ID_offset]) >> 8 | (uint16_t)packet_Data[CMD_ID_offset + 1];
+	
+	/* CONFIRM CRC16 */
+	//Needs to happen before loading data into the ref system struct
+	
+	if(!Verify_CRC16_Check_Sum(packet_Data, (uint32_t)(HEADER_length + CMD_length + data_length + CRC16_length)))
+		return 0U;
+	
+	/* PROCESS DATA */
+	
+	uint8_t *Target_Struct;
+	
+	//selects the proper sub-struct to put the data into based on the CMD ID
+	switch(CMD_ID){
+		case CMD_ID_game_status:
+			Target_Struct = (uint8_t*)&(REF_data.REF_game_status); 
+		case CMD_ID_game_result:
+			Target_Struct = (uint8_t*)&(REF_data.REF_game_result); 
+		case CMD_ID_robot_HP:
+			Target_Struct = (uint8_t*)&(REF_data.REF_robot_HP); 
+		case CMD_ID_dart_status:
+			Target_Struct = (uint8_t*)&(REF_data.REF_dart_status); 
+		case CMD_ID_debuff_status:
+			Target_Struct = (uint8_t*)&(REF_data.REF_debuff_status); 
+		case CMD_ID_event_data:
+			Target_Struct = (uint8_t*)&(REF_data.REF_event_data); 
+		case CMD_ID_projectile_action:
+			Target_Struct = (uint8_t*)&(REF_data.REF_projectile_action); 
+		case CMD_ID_warnings:
+			Target_Struct = (uint8_t*)&(REF_data.REF_warnings); 
+		case CMD_ID_remaining_time:
+			Target_Struct = (uint8_t*)&(REF_data.REF_remaining_time); 
+		case CMD_ID_robot_status:
+			Target_Struct = (uint8_t*)&(REF_data.REF_robot_status); 
+		case CMD_ID_heat_data:
+			Target_Struct = (uint8_t*)&(REF_data.REF_heat_data); 
+		case CMD_ID_robot_pos:
+			Target_Struct = (uint8_t*)&(REF_data.REF_robot_pos); 
+		case CMD_ID_buff:
+			Target_Struct = (uint8_t*)&(REF_data.REF_buff); 
+		case CMD_ID_aerial_energy:
+			Target_Struct = (uint8_t*)&(REF_data.REF_aerial_energy); 
+		case CMD_ID_robot_hurt:
+			Target_Struct = (uint8_t*)&(REF_data.REF_robot_hurt); 
+		case CMD_ID_shoot_data:
+			Target_Struct = (uint8_t*)&(REF_data.REF_shoot_data); 
+		case CMD_ID_bullet_remaining:
+			Target_Struct = (uint8_t*)&(REF_data.REF_bullet_remaining); 
+		case CMD_ID_rfid_status:
+			Target_Struct = (uint8_t*)&(REF_data.REF_rfid_status); 
+		case CMD_ID_dart_client_cmd:
+			Target_Struct = (uint8_t*)&(REF_data.REF_dart_client_cmd); 
+	}
+	
+	
+	//fills the packed struct with data
+	for(int i = 0; i < data_length; i++)
+		Target_Struct[i] = packet_Data[DATA_offset + i];
+	
+	//return true on successful processing!
+	return 1U;
+}
 
 //Cyclical Redundancy Checks
 //crc8 generator polynomial:G(x)=x8+x5+x4+1

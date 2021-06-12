@@ -4,8 +4,26 @@
 #include "struct_typedef.h"
 #include "stm32f4xx_hal.h"
 
-//Packet information
-#define SOF 0xA5
+/* DEFINITIONS */
+
+//Check Data
+
+//Packet information and offsets
+#define HEADER_length 	0x05
+#define SOF_data 				0xA5
+#define SOF_offset 			0x0000
+#define DL_offset 			0x0001
+#define SEQ_offset 			0x0003
+#define CRC8_offset 		0x0004
+
+#define CMD_length			0x0002
+#define CMD_ID_offset 	0x0005
+
+#define DATA_offset 		0x0006
+
+#define CRC16_length  	0x0002
+
+#define PACKET_MAX_LENGTH 0x0030
 
 //Command IDs
 #define CMD_ID_game_status 				0x0001
@@ -28,8 +46,11 @@
 #define CMD_ID_rfid_status 				0x0209
 #define CMD_ID_dart_client_cmd 		0x020A
 
+
+/* STRUCTS */
 //struct definitions outlined in:
 //https://rm-static.djicdn.com/tem/17348/RoboMaster%202021%20Referee%20System%20Serial%20Port%20Protocol%20Appendix%20V1.1%EF%BC%8820210419%EF%BC%89.pdf
+
 typedef __packed struct
 {
   uint8_t game_type : 4;
@@ -203,7 +224,47 @@ typedef __packed struct
 } ext_dart_client_cmd_t;
 
 
-//CRC functions
+
+//Full struct for all ref sysetem information
+typedef struct{
+	ext_game_status_t 		REF_game_status;
+	ext_game_result_t 		REF_game_result;
+	ext_game_robot_HP_t 	REF_robot_HP;
+	ext_dart_status_t 		REF_dart_status;
+	ext_ICRA_buff_debuff_zone_status_t REF_debuff_status;
+	ext_event_data_t			REF_event_data;
+	ext_supply_projectile_action_t REF_projectile_action;
+	ext_referee_warning_t	REF_warnings;
+	ext_dart_remaining_time_t	REF_remaining_time;
+	ext_game_robot_status_t REF_robot_status;
+	ext_power_heat_data_t REF_heat_data;
+	ext_game_robot_pos_t  REF_robot_pos;
+	ext_buff_t						REF_buff;
+	aerial_robot_energy_t REF_aerial_energy;
+	ext_robot_hurt_t			REF_robot_hurt;
+	ext_shoot_data_t			REF_shoot_data;
+	ext_bullet_remaining_t REF_bullet_remaining;
+	ext_rfid_status_t			REF_rfid_status;
+	ext_dart_client_cmd_t REF_dart_client_cmd;
+} referee_data_t;
+
+
+
+
+/* FUNCTIONS */
+
+//takes an incoming byte array and processes it using the protocol
+//packet_Data -- the byte string containing the packet
+//ref_Data    -- the struct for the ref system info to be updated in
+//returns true or false on successful read
+uint8_t REF_Parse_Packet(uint8_t *packet_Data, referee_data_t *ref_Data);
+
+//contains all of the task neccesary to run the ref system
+void refereeLoop(void);
+
+/* CRC */
+//These functions serve to verify the packets
+
 unsigned char Get_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength, unsigned char ucCRC8);
 unsigned int Verify_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength);
 void Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength);
