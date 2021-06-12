@@ -476,7 +476,7 @@
             <File>
               <FileName>referee.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\referee.c</FilePath>
+              <FilePath>..\Src\referee.c</FilePath>
             </File>
           </Files>
         </Group>
