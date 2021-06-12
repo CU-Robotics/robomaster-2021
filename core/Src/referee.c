@@ -8,7 +8,7 @@ uint8_t REF_Packet_Data[PACKET_MAX_LENGTH];
 
 void refereeLoop(void){
 	//puts in interrupt recieve request
-	HAL_UART_Receive_IT(&huart1, REF_Packet_Data, PACKET_MAX_LENGTH);
+	HAL_UART_Receive_IT(&huart6, REF_Packet_Data, PACKET_MAX_LENGTH);
 	//parses data
 	REF_Parse_Packet(REF_Packet_Data, &REF_data);
 }
