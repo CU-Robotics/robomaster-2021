@@ -360,6 +360,52 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 /* USER CODE BEGIN 1 */
 
+uartBuffer newBuffer(void){
+	uartBuffer temp;
+	for(int i = 0; i < UART_BUFFER_LENGTH; i++){
+		temp.data[i] = 0;
+	}
+	temp.readHead = 0;
+	temp.writeHead = 0;
+	temp.bytesRecieved = 0;
+	
+	return temp;
+}
+
+void addByteToBuffer(uartBuffer *buff, uint8_t byteToAdd){
+	buff->data[buff->writeHead] = byteToAdd;
+	buff->writeHead++;
+	if(buff->writeHead >= (uint8_t)UART_BUFFER_LENGTH){
+		buff->writeHead = 0;
+	}
+}
+
+void flushBuffer(uartBuffer *buff){
+	for(int i = 0; i < UART_BUFFER_LENGTH; i++){
+		buff->data[i] = 0;
+	}
+	buff->readHead = 0;
+	buff->writeHead = 0;
+}
+
+void readSingleByteFromBuffer(uartBuffer *buff, uint8_t *dataOut){
+	*dataOut = buff->data[buff->readHead];
+	buff->readHead++;
+	if(buff->readHead >= (uint8_t)UART_BUFFER_LENGTH)
+		buff->readHead = 0;
+}
+
+void readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t bufferIndex, uint8_t numOfBytes){
+	for(int i = 0; i < numOfBytes; i++){
+		if(i + bufferIndex >= UART_BUFFER_LENGTH){
+			dataOut[i] = buff->data[i + bufferIndex - UART_BUFFER_LENGTH];
+		}
+		else{
+			dataOut[i] = buff->data[i + bufferIndex];
+		}
+	}
+}
+
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
