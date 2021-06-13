@@ -4,12 +4,14 @@
 #include "can.h"
 #include "CAN_receive.h"
 #include "bsp_fric.h"
+#include "BMI088driver.h"
 
 #include "constants.h"
 #include "pid.h"
 #include "utils.h"
 
 #include "turret.h"
+
 
 PIDProfile yawProfile;
 PIDProfile pitchProfile;
@@ -31,6 +33,8 @@ int pitchOffset;
 float yawSetpoint = 0;
 float pitchSetpoint = 0;
 float tempPitchPosition = 0;
+
+fp32 gyro[3], accel[3], temp;
 
 void turretInit() {
   // PID Profiles containing tuning parameters.
@@ -64,15 +68,19 @@ void turretInit() {
 void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
   if (zeroed) {
     /* Turret Code */
+    // Apply offset for field-centric control
+    BMI088_read(gyro, accel, &temp);
+    yawSetpoint += (gyro[2] * deltaTime) / (1000.0f);
+
     // Mouse control
     yawSetpoint += deltaTime * M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
     pitchSetpoint += deltaTime * M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
 		
 		// Keep yaw setpoints in -2pi to 2pi range for stability
-    if (yawSetpoint > 2*M_PI) {
-      yawSetpoint -= 2*M_PI;
-    } else if (yawSetpoint < -2*M_PI) {
-      yawSetpoint += 2*M_PI;
+    if (yawSetpoint > 2 * M_PI) {
+      yawSetpoint -= 2 * M_PI;
+    } else if (yawSetpoint < -2 * M_PI) {
+      yawSetpoint += 2 * M_PI;
     }
 
     // Apply pitch soft limits
