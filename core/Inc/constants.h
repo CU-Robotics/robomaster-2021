@@ -30,18 +30,18 @@
 
 // -- GAME CONFIGURATION --
 // Chassis
-#define CONF_CHASSIS_CURRENT_LIMIT_0 = (40.0f / M_BATTERY_VOLTAGE)                                                                  // Level 0
-#define CONF_CHASSIS_CURRENT_LIMIT_POW = { (60.0f / M_BATTERY_VOLTAGE), (80.0f / M_BATTERY_VOLTAGE), (100.0f / M_BATTERY_VOLTAGE) } // Power-Focused Chassis
-#define CONF_CHASSIS_CURRENT_LIMIT_HP = { (45.0f / M_BATTERY_VOLTAGE), (50.0f / M_BATTERY_VOLTAGE), (55.0f / M_BATTERY_VOLTAGE) }   // HP-Focused Chassis
+#define CONF_CHASSIS_CURRENT_LIMIT_0 (40.0f / M_BATTERY_VOLTAGE)                                                                  // Level 0
+#define CONF_CHASSIS_CURRENT_LIMIT_POW { (60.0f / M_BATTERY_VOLTAGE), (80.0f / M_BATTERY_VOLTAGE), (100.0f / M_BATTERY_VOLTAGE) } // Power-Focused Chassis
+#define CONF_CHASSIS_CURRENT_LIMIT_HP { (45.0f / M_BATTERY_VOLTAGE), (50.0f / M_BATTERY_VOLTAGE), (55.0f / M_BATTERY_VOLTAGE) }   // HP-Focused Chassis
 // Shooter
-#define CONF_SHOOTER_SPEED_PERCENTAGE_0 = 0.70f                               // Level 0
-#define CONF_SHOOTER_SPEED_PERCENTAGE_BURST = { (0.70f), (0.70f), (0.70f) }   // Burst-Focused Shooter
-#define CONF_SHOOTER_SPEED_PERCENTAGE_COOLING = { (0.70f), (0.80f), (0.80f) } // Cooling-Focused Shooter
-#define CONF_SHOOTER_SPEED_PERCENTAGE_SPEED = { (0.90f), (0.90f), (0.90f) }   //Projectile Speed-Focused Shooter
+#define CONF_SHOOTER_SPEED_PERCENTAGE_0 0.70f                               // Level 0
+#define CONF_SHOOTER_SPEED_PERCENTAGE_BURST { (0.70f), (0.70f), (0.70f) }   // Burst-Focused Shooter
+#define CONF_SHOOTER_SPEED_PERCENTAGE_COOLING { (0.70f), (0.80f), (0.80f) } // Cooling-Focused Shooter
+#define CONF_SHOOTER_SPEED_PERCENTAGE_SPEED { (0.90f), (0.90f), (0.90f) }   //Projectile Speed-Focused Shooter
 // Feeder
-#define CONF_SHOOTER_FIRERATE_BURST = 0.04f                 // Feeder speed in burst mode
-#define CONF_SHOOTER_FIRERATE_HIGH = 0.03f                  // Feeder speed in high firerate mode
-#define CONF_SHOOTER_FIRERATE_LOW = 0.02f                   // Feeder speed at low firerate mode
+#define CONF_SHOOTER_FIRERATE_BURST 0.04f                 // Feeder speed in burst mode
+#define CONF_SHOOTER_FIRERATE_HIGH 0.03f                  // Feeder speed in high firerate mode
+#define CONF_SHOOTER_FIRERATE_LOW 0.02f                   // Feeder speed at low firerate mode
 
 // -- MOTORS --
 // M3508
@@ -67,14 +67,14 @@
 #define M_PID_INTEGRAL_BUFFER_SIZE 100                 	  // 100ms
 
 // -- BITMASKS -- 
-#define M_W_BITMASH BIT0
+#define M_W_BITMASK BIT0
 #define M_S_BITMASK BIT1
 #define M_A_BITMASK BIT2
-#define B_D_BITMASK BIT3
-#define B_SHIFT_BITMASK BIT4
-#define B_CTRL_BITMASK BIT5
+#define M_D_BITMASK BIT3
+#define M_SHIFT_BITMASK BIT4
+#define M_CTRL_BITMASK BIT5
 #define M_Q_BITMASK BIT6
-#define B_E_BITMASK BIT7
+#define M_E_BITMASK BIT7
 #define M_R_BITMASK BIT8
 #define M_Z_BITMASK BIT11
 #define M_X_BITMASK BIT12
