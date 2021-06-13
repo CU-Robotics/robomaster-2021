@@ -137,6 +137,10 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
       unjamDirection = 1;
     }
 
+    if (get_pitch_gimbal_motor_measure_point->temp > M_TURRET_PITCH_TEMP_LIMIT) {
+      turret.pitch = 0.0f;
+    }
+
     /* Set motor output values */
     CAN_cmd_gimbal_working(turret.yaw * M_GM6020_VOLTAGE_SCALE, turret.pitch * M_M3508_CURRENT_SCALE, feederSpeed, 0);
 
