@@ -137,7 +137,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
       unjamDirection = 1;
     }
 
-    if (get_pitch_gimbal_motor_measure_point->temperate > M_TURRET_PITCH_TEMP_LIMIT) {
+    if (get_pitch_gimbal_motor_measure_point()->temperate > M_TURRET_PITCH_TEMP_LIMIT) {
       turret.pitch = 0.0f;
     }
 
