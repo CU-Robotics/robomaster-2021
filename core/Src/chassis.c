@@ -34,19 +34,19 @@ void chassisInit() {
 
 void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	//Collect Controller input
-	yThrottle = 0.0f;
+	xThrottle = 0.0f;
 	if (control_input->key.v & M_W_BITMASK) {
-		yThrottle += 1.0f;
+		xThrottle += 1.0f;
 	}
 	if (control_input->key.v & M_S_BITMASK) {
-		yThrottle -= 1.0f;
-	}
-	xThrottle = 0.0f;
-	if (control_input->key.v & M_A_BITMASK) {
 		xThrottle -= 1.0f;
 	}
+	yThrottle = 0.0f;
+	if (control_input->key.v & M_A_BITMASK) {
+		yThrottle -= 1.0f;
+	}
 	if (control_input->key.v & M_D_BITMASK) {
-		xThrottle += 1.0f;
+		yThrottle += 1.0f;
 	}
 	rotation = 0.0f;
 	if (control_input->key.v & M_Q_BITMASK) {
