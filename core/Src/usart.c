@@ -41,7 +41,6 @@ void USART1_IRQHandler(void)
     {
         receive = huart1.Instance->DR;
         HAL_GPIO_TogglePin(LED_R_GPIO_Port, LED_R_Pin);
-
     }
     //idle interrupt
     else if(huart1.Instance->SR & UART_FLAG_IDLE)
@@ -52,43 +51,8 @@ void USART1_IRQHandler(void)
 
 }
 
-/* USART6 is used for the referee system and corresponds to UART2 on the board, the 3-pin port */
-void USART6_IRQHandler(void)  
-{
-
-    volatile uint8_t receive;
-    //receive interrupt
-    if(huart6.Instance->SR & UART_FLAG_RXNE)
-    {
-        receive = huart6.Instance->DR;
-        HAL_GPIO_TogglePin(LED_G_GPIO_Port, LED_G_Pin);
-
-    }
-    //idle interrupt
-    else if(huart6.Instance->SR & UART_FLAG_IDLE)
-    {
-        receive = huart6.Instance->DR;
-        HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
-    }
 
 
-}
-
-
-/* Target Specific Rx Tx functions */
-void UART_Recieve_From_Referee(uint8_t *data, uint8_t *dataLength){
-}
-
-void UART_Recieve_From_Jetson(uint8_t *data, uint8_t *dataLength){
-}
-
-void UART_Transmit_To_Referee(uint8_t *data, uint8_t dataLength){
-	HAL_UART_Transmit_IT(&huart6, data, dataLength);
-}
-
-void UART_Transmit_To_Jetson(uint8_t *data, uint8_t dataLength){
-	HAL_UART_Transmit_IT(&huart1, data, dataLength);
-}
 
 /* USART1 init function */
 //USART1 is wired to the 4pin uart port, labeled uart1, used for the jetson
@@ -380,14 +344,6 @@ void addByteToBuffer(uartBuffer *buff, uint8_t byteToAdd){
 	}
 }
 
-void flushBuffer(uartBuffer *buff){
-	for(int i = 0; i < UART_BUFFER_LENGTH; i++){
-		buff->data[i] = 0;
-	}
-	buff->readHead = 0;
-	buff->writeHead = 0;
-}
-
 void readSingleByteFromBuffer(uartBuffer *buff, uint8_t *dataOut){
 	*dataOut = buff->data[buff->readHead];
 	buff->readHead++;
@@ -395,15 +351,16 @@ void readSingleByteFromBuffer(uartBuffer *buff, uint8_t *dataOut){
 		buff->readHead = 0;
 }
 
-void readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t bufferIndex, uint8_t numOfBytes){
+void readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t numOfBytes){
 	for(int i = 0; i < numOfBytes; i++){
-		if(i + bufferIndex >= UART_BUFFER_LENGTH){
-			dataOut[i] = buff->data[i + bufferIndex - UART_BUFFER_LENGTH];
+		if(i + buff->readHead >= UART_BUFFER_LENGTH){
+			dataOut[i] = buff->data[i + buff->readHead - UART_BUFFER_LENGTH];
 		}
 		else{
-			dataOut[i] = buff->data[i + bufferIndex];
+			dataOut[i] = buff->data[i + buff->readHead];
 		}
 	}
+	buff->readHead = (buff->readHead + numOfBytes) / UART_BUFFER_LENGTH;
 }
 
 /* USER CODE END 1 */

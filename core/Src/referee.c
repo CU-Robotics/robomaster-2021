@@ -3,14 +3,101 @@
 #include "stm32f4xx_hal.h"
 
 //globally available ref variables
-referee_data_t REF_data;
-uint8_t REF_Packet_Data[PACKET_MAX_LENGTH];
+referee_data_t refData;
+uint8_t refPacket[PACKET_MAX_LENGTH];
+uint8_t refPacketParserState;
+uartBuffer refBuffer;
+
+/* USART6 is used for the referee system and corresponds to UART2 on the board, the 3-pin port */
+//This interrupt is called everytime a byte is recieved
+//The byte is then fed into the buffer
+void USART6_IRQHandler(void)  
+{
+
+    volatile uint8_t receive;
+    //receive interrupt
+    if(huart6.Instance->SR & UART_FLAG_RXNE)
+    {
+        receive = huart6.Instance->DR;
+        HAL_GPIO_TogglePin(LED_G_GPIO_Port, LED_G_Pin);
+				addByteToBuffer(&refBuffer, receive);
+
+    }
+    //idle interrupt
+    else if(huart6.Instance->SR & UART_FLAG_IDLE)
+    {
+        receive = huart6.Instance->DR;
+        HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
+    }
+
+
+}
+
+void refereeInitialization(void){
+	refPacketParserState = SEARCHING_FOR_SOF;
+	refBuffer = newBuffer();
+}
 
 void refereeLoop(void){
-	//puts in interrupt recieve request
-	HAL_UART_Receive_IT(&huart6, REF_Packet_Data, PACKET_MAX_LENGTH);
-	//parses data
-	REF_Parse_Packet(REF_Packet_Data, &REF_data);
+	switch(refPacketParserState){
+		case SEARCHING_FOR_SOF:{
+			//iterate through buffer searching for start of packet
+			while(refPacketParserState == SEARCHING_FOR_SOF){
+				uint8_t byteToCheck;
+				readSingleByteFromBuffer(&refBuffer, &byteToCheck);
+				if(byteToCheck == SOF_data){
+					refPacketParserState = PROCESSING_HEADER;
+					refPacket[0] = SOF_data;
+				}
+			}
+			break;
+		}
+		case PROCESSING_HEADER:{
+			//read header
+			for(int i = 1; i < 5; i++){
+				uint8_t readByte;
+				readSingleByteFromBuffer(&refBuffer, &readByte);
+				refPacket[i] = readByte;
+			}
+			
+			//confirm CRC or move to data extraction
+			#ifdef ConfirmCRC
+				if(Verify_CRC8_Check_Sum(refPacket,HEADER_length)){
+					refPacketParserState = EXTRACTING_DATA;
+				}
+				else{
+					refPacketParserState = SEARCHING_FOR_SOF;
+				}
+			#else
+				refPacketParserState = EXTRACTING_DATA;
+			#endif
+			break;
+		}
+		case EXTRACTING_DATA:{
+			//read length of data
+			uint16_t dataLength = ((uint16_t)refPacket[DL_offset]) >> 8 | (uint16_t)refPacket[DL_offset + 1];
+			
+			//extract data from buffer
+			uint8_t data[dataLength];
+			readBytesFromBuffer(&refBuffer, data, dataLength);
+			
+			//put data into ref packet
+			for(int i = 0; i < dataLength; i++){
+				refPacket[DATA_offset + i] = data[i];
+			}
+			
+			//parse packet, includeing CRC16 check
+			REF_Parse_Packet(refPacket, &refData);
+			
+			//re-enter search for next packet
+			refPacketParserState = SEARCHING_FOR_SOF;
+			break;
+		}
+		default:{
+			refPacketParserState = SEARCHING_FOR_SOF;
+			break;
+		}
+	}
 }
 
 uint8_t REF_Parse_Packet(uint8_t *packet_Data, referee_data_t *ref_data){
@@ -62,43 +149,43 @@ uint8_t REF_Parse_Packet(uint8_t *packet_Data, referee_data_t *ref_data){
 	//selects the proper sub-struct to put the data into based on the CMD ID
 	switch(CMD_ID){
 		case CMD_ID_game_status:
-			Target_Struct = (uint8_t*)&(REF_data.REF_game_status); 
+			Target_Struct = (uint8_t*)&(refData.REF_game_status); 
 		case CMD_ID_game_result:
-			Target_Struct = (uint8_t*)&(REF_data.REF_game_result); 
+			Target_Struct = (uint8_t*)&(refData.REF_game_result); 
 		case CMD_ID_robot_HP:
-			Target_Struct = (uint8_t*)&(REF_data.REF_robot_HP); 
+			Target_Struct = (uint8_t*)&(refData.REF_robot_HP); 
 		case CMD_ID_dart_status:
-			Target_Struct = (uint8_t*)&(REF_data.REF_dart_status); 
+			Target_Struct = (uint8_t*)&(refData.REF_dart_status); 
 		case CMD_ID_debuff_status:
-			Target_Struct = (uint8_t*)&(REF_data.REF_debuff_status); 
+			Target_Struct = (uint8_t*)&(refData.REF_debuff_status); 
 		case CMD_ID_event_data:
-			Target_Struct = (uint8_t*)&(REF_data.REF_event_data); 
+			Target_Struct = (uint8_t*)&(refData.REF_event_data); 
 		case CMD_ID_projectile_action:
-			Target_Struct = (uint8_t*)&(REF_data.REF_projectile_action); 
+			Target_Struct = (uint8_t*)&(refData.REF_projectile_action); 
 		case CMD_ID_warnings:
-			Target_Struct = (uint8_t*)&(REF_data.REF_warnings); 
+			Target_Struct = (uint8_t*)&(refData.REF_warnings); 
 		case CMD_ID_remaining_time:
-			Target_Struct = (uint8_t*)&(REF_data.REF_remaining_time); 
+			Target_Struct = (uint8_t*)&(refData.REF_remaining_time); 
 		case CMD_ID_robot_status:
-			Target_Struct = (uint8_t*)&(REF_data.REF_robot_status); 
+			Target_Struct = (uint8_t*)&(refData.REF_robot_status); 
 		case CMD_ID_heat_data:
-			Target_Struct = (uint8_t*)&(REF_data.REF_heat_data); 
+			Target_Struct = (uint8_t*)&(refData.REF_heat_data); 
 		case CMD_ID_robot_pos:
-			Target_Struct = (uint8_t*)&(REF_data.REF_robot_pos); 
+			Target_Struct = (uint8_t*)&(refData.REF_robot_pos); 
 		case CMD_ID_buff:
-			Target_Struct = (uint8_t*)&(REF_data.REF_buff); 
+			Target_Struct = (uint8_t*)&(refData.REF_buff); 
 		case CMD_ID_aerial_energy:
-			Target_Struct = (uint8_t*)&(REF_data.REF_aerial_energy); 
+			Target_Struct = (uint8_t*)&(refData.REF_aerial_energy); 
 		case CMD_ID_robot_hurt:
-			Target_Struct = (uint8_t*)&(REF_data.REF_robot_hurt); 
+			Target_Struct = (uint8_t*)&(refData.REF_robot_hurt); 
 		case CMD_ID_shoot_data:
-			Target_Struct = (uint8_t*)&(REF_data.REF_shoot_data); 
+			Target_Struct = (uint8_t*)&(refData.REF_shoot_data); 
 		case CMD_ID_bullet_remaining:
-			Target_Struct = (uint8_t*)&(REF_data.REF_bullet_remaining); 
+			Target_Struct = (uint8_t*)&(refData.REF_bullet_remaining); 
 		case CMD_ID_rfid_status:
-			Target_Struct = (uint8_t*)&(REF_data.REF_rfid_status); 
+			Target_Struct = (uint8_t*)&(refData.REF_rfid_status); 
 		case CMD_ID_dart_client_cmd:
-			Target_Struct = (uint8_t*)&(REF_data.REF_dart_client_cmd); 
+			Target_Struct = (uint8_t*)&(refData.REF_dart_client_cmd); 
 	}
 	
 	

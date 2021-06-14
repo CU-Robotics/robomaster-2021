@@ -37,19 +37,13 @@ extern UART_HandleTypeDef huart6;
 /* USER CODE BEGIN Private defines */
 
 //Length of buffer storing incoming uart bytes
-#define UART_BUFFER_LENGTH 1000
+#define UART_BUFFER_LENGTH 255
 
 /* USER CODE END Private defines */
 
 void MX_USART1_UART_Init(void);
 void MX_USART3_UART_Init(void);
 void MX_USART6_UART_Init(void);
-
-void UART_Recieve_From_Referee(uint8_t *data, uint8_t *dataLength);
-void UART_Recieve_From_Jetson(uint8_t *data, uint8_t *dataLength);
-
-void UART_Transmit_To_Referee(uint8_t *data, uint8_t dataLength);
-void UART_Transmit_To_Jetson(uint8_t *data, uint8_t dataLength);
 
 /* USER CODE BEGIN Prototypes */
 
@@ -62,9 +56,8 @@ typedef struct{
 
 uartBuffer newBuffer(void);
 void addByteToBuffer(uartBuffer *buff, uint8_t byteToAdd);
-void flushBuffer(uartBuffer *buff);
 void readSingleByteFromBuffer(uartBuffer *buff, uint8_t *dataOut);
-void readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t bufferIndex, uint8_t numOfBytes);
+void readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t numOfBytes);
 
 /* USER CODE END Prototypes */
 

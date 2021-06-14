@@ -9,6 +9,8 @@
 //Check Data
 
 //Packet information and offsets
+#define ConfirmCRC		//define to confirm CRCs
+
 #define HEADER_length 	0x05
 #define SOF_data 				0xA5
 #define DL_offset 			0x0001
@@ -45,6 +47,15 @@
 #define CMD_ID_bullet_remaining 	0x0208
 #define CMD_ID_rfid_status 				0x0209
 #define CMD_ID_dart_client_cmd 		0x020A
+
+
+//States for Referee Packet Parser
+enum RefPacketParserState
+{
+		SEARCHING_FOR_SOF,  /// Searching through byte stream for start of frame
+		PROCESSING_HEADER,  /// Processing frame header to prep for data extraction
+		EXTRACTING_DATA     /// Extracting data
+};
 
 
 /* STRUCTS */
@@ -260,6 +271,7 @@ typedef struct{
 uint8_t REF_Parse_Packet(uint8_t *packet_Data, referee_data_t *ref_Data);
 
 //contains all of the task neccesary to run the ref system
+void refereeInitialization(void);
 void refereeLoop(void);
 
 /* CRC */
