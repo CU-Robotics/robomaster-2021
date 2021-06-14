@@ -330,37 +330,57 @@ uartBuffer newBuffer(void){
 		temp.data[i] = 0;
 	}
 	temp.readHead = 0;
-	temp.writeHead = 0;
+	temp.writeHead = 1;
 	temp.bytesRecieved = 0;
+	temp.bytesRead = 0;
 	
 	return temp;
 }
 
-void addByteToBuffer(uartBuffer *buff, uint8_t byteToAdd){
+void flushBuffer(uartBuffer *buff){
+	for(int i = 0; i < UART_BUFFER_LENGTH; i++){
+		buff->data[i] = 0;
+	}
+	buff->readHead = 0;
+	buff->writeHead = 1;
+}
+
+uint8_t addByteToBuffer(uartBuffer *buff, uint8_t byteToAdd){
 	buff->data[buff->writeHead] = byteToAdd;
 	buff->writeHead++;
+	buff->bytesRecieved++;
 	if(buff->writeHead >= (uint8_t)UART_BUFFER_LENGTH){
 		buff->writeHead = 0;
 	}
+	//check if writeHead passes readHead
+	if(buff->readHead == buff->writeHead)
+		return error;
+	else
+		return success;
 }
 
-void readSingleByteFromBuffer(uartBuffer *buff, uint8_t *dataOut){
+uint8_t readSingleByteFromBuffer(uartBuffer *buff, uint8_t *dataOut){
 	*dataOut = buff->data[buff->readHead];
 	buff->readHead++;
+	buff->bytesRead++;
 	if(buff->readHead >= (uint8_t)UART_BUFFER_LENGTH)
 		buff->readHead = 0;
+	//check if readHead passes writeHead
+	if(buff->readHead == buff->writeHead)
+		return error;
+	else
+		return success;
 }
 
-void readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t numOfBytes){
+uint8_t readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t numOfBytes){
 	for(int i = 0; i < numOfBytes; i++){
-		if(i + buff->readHead >= UART_BUFFER_LENGTH){
-			dataOut[i] = buff->data[i + buff->readHead - UART_BUFFER_LENGTH];
-		}
-		else{
-			dataOut[i] = buff->data[i + buff->readHead];
-		}
+		uint8_t singleByte;
+		if(readSingleByteFromBuffer(buff, &singleByte) == success)
+			dataOut[i] = singleByte;
+		else	
+			return error;
 	}
-	buff->readHead = (buff->readHead + numOfBytes) / UART_BUFFER_LENGTH;
+	return success;
 }
 
 /* USER CODE END 1 */

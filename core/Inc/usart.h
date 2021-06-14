@@ -52,12 +52,19 @@ typedef struct{
 	uint8_t readHead;
 	uint8_t writeHead;
 	uint32_t bytesRecieved;
+	uint32_t bytesRead;
 } uartBuffer;	
 
+enum bufferReturnMessage{
+	success,
+	error
+};
+
 uartBuffer newBuffer(void);
-void addByteToBuffer(uartBuffer *buff, uint8_t byteToAdd);
-void readSingleByteFromBuffer(uartBuffer *buff, uint8_t *dataOut);
-void readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t numOfBytes);
+void flushBuffer(uartBuffer *buff);
+uint8_t addByteToBuffer(uartBuffer *buff, uint8_t byteToAdd);
+uint8_t readSingleByteFromBuffer(uartBuffer *buff, uint8_t *dataOut);
+uint8_t readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t numOfBytes);
 
 /* USER CODE END Prototypes */
 

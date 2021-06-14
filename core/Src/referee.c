@@ -42,12 +42,19 @@ void refereeLoop(void){
 	switch(refPacketParserState){
 		case SEARCHING_FOR_SOF:{
 			//iterate through buffer searching for start of packet
-			while(refPacketParserState == SEARCHING_FOR_SOF){
+			for(int i = 0; i < UART_BUFFER_LENGTH; i++){
 				uint8_t byteToCheck;
-				readSingleByteFromBuffer(&refBuffer, &byteToCheck);
+				
+				//read byte, and flush buffer if there's a problem
+				if(readSingleByteFromBuffer(&refBuffer, &byteToCheck) == error){
+					flushBuffer(&refBuffer);
+					break;
+				}
+					
 				if(byteToCheck == SOF_data){
 					refPacketParserState = PROCESSING_HEADER;
 					refPacket[0] = SOF_data;
+					break;
 				}
 			}
 			break;
@@ -56,7 +63,13 @@ void refereeLoop(void){
 			//read header
 			for(int i = 1; i < 5; i++){
 				uint8_t readByte;
-				readSingleByteFromBuffer(&refBuffer, &readByte);
+				
+				//read byte, and flush buffer if there's a problem
+				if(readSingleByteFromBuffer(&refBuffer, &readByte) == error){
+					flushBuffer(&refBuffer);
+					break;
+				}
+				
 				refPacket[i] = readByte;
 			}
 			
@@ -79,7 +92,11 @@ void refereeLoop(void){
 			
 			//extract data from buffer
 			uint8_t data[dataLength];
-			readBytesFromBuffer(&refBuffer, data, dataLength);
+			//read byte, and flush buffer if there's a problem
+			if(readBytesFromBuffer(&refBuffer, data, dataLength) == error){
+				flushBuffer(&refBuffer);
+				break;
+			}
 			
 			//put data into ref packet
 			for(int i = 0; i < dataLength; i++){
