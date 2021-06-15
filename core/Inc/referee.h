@@ -11,8 +11,11 @@
 //Packet information and offsets
 #define ConfirmCRC		//define to confirm CRCs
 
+#define REF_PACKET_BUFFER_LENGTH 256
+
 #define HEADER_length 	0x05
 #define SOF_data 				0xA5
+#define SOF_Offset 			0x00
 #define DL_offset 			0x0001
 #define SEQ_offset 			0x0003
 #define CRC8_offset 		0x0004
@@ -49,17 +52,16 @@
 #define CMD_ID_dart_client_cmd 		0x020A
 
 
-//States for Referee Packet Parser
-enum RefPacketParserState
-{
-		SEARCHING_FOR_SOF,  /// Searching through byte stream for start of frame
-		PROCESSING_HEADER,  /// Processing frame header to prep for data extraction
-		EXTRACTING_DATA     /// Extracting data
-};
-
-
 /* STRUCTS */
-//struct definitions outlined in:
+//packet data and parsing info
+typedef struct{
+	uint8_t packetBytes[PACKET_MAX_LENGTH];
+	uint16_t dataLength;
+	uint8_t bytesProcessed;
+	uint8_t isComplete;
+} refPacket;
+
+//ref struct definitions outlined in:
 //https://rm-static.djicdn.com/tem/17348/RoboMaster%202021%20Referee%20System%20Serial%20Port%20Protocol%20Appendix%20V1.1%EF%BC%8820210419%EF%BC%89.pdf
 
 typedef __packed struct
@@ -264,19 +266,18 @@ typedef struct{
 
 /* FUNCTIONS */
 
-//takes an incoming byte array and processes it using the protocol
-//packet_Data -- the byte string containing the packet
-//ref_Data    -- the struct for the ref system info to be updated in
-//returns true or false on successful read
-uint8_t REF_Parse_Packet(uint8_t *packet_Data, referee_data_t *ref_Data);
+//processing functions
+void REF_Process_Packet_Buffer(refPacket *packet_Buffer, referee_data_t *ref_Data);
+void REF_Parse_Packet_Bytewise(refPacket *tempPacket, refPacket *packet_Buffer, uint8_t incomingByte);
+void REF_Clear_Packet(refPacket *packet);
+void REF_Write_Packet_To_Buffer(refPacket *tempPacket, refPacket *packet_Buffer);
 
-//contains all of the task neccesary to run the ref system
+//contains all of the tasks neccesary to run the ref system
 void refereeInitialization(void);
 void refereeLoop(void);
 
 /* CRC */
 //These functions serve to verify the packets
-
 unsigned char Get_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength, unsigned char ucCRC8);
 unsigned int Verify_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength);
 void Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength);
