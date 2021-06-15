@@ -12,7 +12,7 @@ void USART1_IRQHandler(void){
     {
         receive = huart1.Instance->DR;
         HAL_GPIO_TogglePin(LED_R_GPIO_Port, LED_R_Pin);
-				JETSON_Parse_Packet_Bytewise(&jetsonTempPacket, jetsonPacketBuffer, receive);
+				JETSON_Parse_Packet_Bytewise(&jetsonTempPacket, receive);
     }
     //idle interrupt
     else if(huart1.Instance->SR & UART_FLAG_IDLE)
