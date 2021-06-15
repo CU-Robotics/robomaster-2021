@@ -47,25 +47,6 @@ void MX_USART6_UART_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
-typedef struct{
-	uint8_t data[UART_BUFFER_LENGTH];
-	uint8_t readHead;
-	uint8_t writeHead;
-	uint32_t bytesRecieved;
-	uint32_t bytesRead;
-} uartBuffer;	
-
-enum bufferReturnMessage{
-	success,
-	error
-};
-
-uartBuffer newBuffer(void);
-void flushBuffer(uartBuffer *buff);
-uint8_t addByteToBuffer(uartBuffer *buff, uint8_t byteToAdd);
-uint8_t readSingleByteFromBuffer(uartBuffer *buff, uint8_t *dataOut);
-uint8_t readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t numOfBytes);
-
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus

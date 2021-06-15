@@ -30,30 +30,6 @@ UART_HandleTypeDef huart6;
 DMA_HandleTypeDef hdma_usart1_tx;
 DMA_HandleTypeDef hdma_usart3_rx;
 
-/* USART IRQ Handlers */
-
-/* USART1 is used for the jetson nano and corresponds to UART1 on the board, the 4-pin port */
-void USART1_IRQHandler(void)  
-{
-    volatile uint8_t receive;
-    //receive interrupt
-    if(huart1.Instance->SR & UART_FLAG_RXNE)
-    {
-        receive = huart1.Instance->DR;
-        HAL_GPIO_TogglePin(LED_R_GPIO_Port, LED_R_Pin);
-    }
-    //idle interrupt
-    else if(huart1.Instance->SR & UART_FLAG_IDLE)
-    {
-        receive = huart1.Instance->DR;
-        HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_RESET);
-    }
-
-}
-
-
-
-
 /* USART1 init function */
 //USART1 is wired to the 4pin uart port, labeled uart1, used for the jetson
 void MX_USART1_UART_Init(void)
@@ -323,65 +299,6 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 } 
 
 /* USER CODE BEGIN 1 */
-
-uartBuffer newBuffer(void){
-	uartBuffer temp;
-	for(int i = 0; i < UART_BUFFER_LENGTH; i++){
-		temp.data[i] = 0;
-	}
-	temp.readHead = 0;
-	temp.writeHead = 1;
-	temp.bytesRecieved = 0;
-	temp.bytesRead = 0;
-	
-	return temp;
-}
-
-void flushBuffer(uartBuffer *buff){
-	for(int i = 0; i < UART_BUFFER_LENGTH; i++){
-		buff->data[i] = 0;
-	}
-	buff->readHead = 0;
-	buff->writeHead = 1;
-}
-
-uint8_t addByteToBuffer(uartBuffer *buff, uint8_t byteToAdd){
-	buff->data[buff->writeHead] = byteToAdd;
-	buff->writeHead++;
-	buff->bytesRecieved++;
-	if(buff->writeHead >= (uint8_t)UART_BUFFER_LENGTH){
-		buff->writeHead = 0;
-	}
-	//check if writeHead passes readHead
-	if(buff->readHead == buff->writeHead)
-		return error;
-	else
-		return success;
-}
-
-uint8_t readSingleByteFromBuffer(uartBuffer *buff, uint8_t *dataOut){
-	*dataOut = buff->data[buff->readHead];
-	buff->readHead++;
-	buff->bytesRead++;
-	if(buff->readHead >= (uint8_t)UART_BUFFER_LENGTH)
-		buff->readHead = 0;
-	//check if readHead passes writeHead
-	if(buff->readHead == buff->writeHead)
-		return error;
-	else
-		return success;
-}
-
-uint8_t readBytesFromBuffer(uartBuffer *buff, uint8_t *dataOut, uint8_t numOfBytes){
-	for(int i = 0; i < numOfBytes; i++){
-		uint8_t singleByte;
-		if(readSingleByteFromBuffer(buff, &singleByte) == success)
-			dataOut[i] = singleByte;
-		else	
-			return error;
-	}
-	return success;
-}
 
 /* USER CODE END 1 */
 

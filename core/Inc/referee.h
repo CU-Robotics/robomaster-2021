@@ -61,9 +61,9 @@ typedef struct{
 	uint8_t isComplete;
 } refPacket;
 
+
 //ref struct definitions outlined in:
 //https://rm-static.djicdn.com/tem/17348/RoboMaster%202021%20Referee%20System%20Serial%20Port%20Protocol%20Appendix%20V1.1%EF%BC%8820210419%EF%BC%89.pdf
-
 typedef __packed struct
 {
   uint8_t game_type : 4;
@@ -275,14 +275,5 @@ void REF_Write_Packet_To_Buffer(refPacket *tempPacket, refPacket *packet_Buffer)
 //contains all of the tasks neccesary to run the ref system
 void refereeInitialization(void);
 void refereeLoop(void);
-
-/* CRC */
-//These functions serve to verify the packets
-unsigned char Get_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength, unsigned char ucCRC8);
-unsigned int Verify_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength);
-void Append_CRC8_Check_Sum(unsigned char *pchMessage, unsigned int dwLength);
-uint16_t Get_CRC16_Check_Sum(uint8_t *pchMessage,uint32_t dwLength,uint16_t wCRC);
-uint32_t Verify_CRC16_Check_Sum(uint8_t *pchMessage, uint32_t dwLength);
-void Append_CRC16_Check_Sum(uint8_t * pchMessage,uint32_t dwLength);
 
 #endif
