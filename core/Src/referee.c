@@ -47,7 +47,7 @@ void REF_Parse_Packet_Bytewise(refPacket *tempPacket, refPacket *packet_Buffer, 
 		}
 	}
 	else if(tempPacket->bytesProcessed == DL_offset){
-		tempPacket->dataLength = (uint16_t)incomingByte >> 8;
+		tempPacket->dataLength = (uint16_t)incomingByte << 8;
 		tempPacket->packetBytes[tempPacket->bytesProcessed++] = incomingByte;
 	}
 	else if(tempPacket->bytesProcessed == DL_offset + 1){
@@ -100,10 +100,10 @@ void REF_Process_Packet_Buffer(refPacket *packet_Buffer, referee_data_t *ref_Dat
 			//uint8_t sequence_number = packet_Buffer[i].packetBytes[SEQ_offset];
 			
 			//read data length
-			uint16_t data_length = ((uint16_t)packet_Buffer[i].packetBytes[DL_offset]) >> 8 | (uint16_t)packet_Buffer[i].packetBytes[DL_offset + 1];
+			uint16_t data_length = ((uint16_t)packet_Buffer[i].packetBytes[DL_offset]) << 8 | (uint16_t)packet_Buffer[i].packetBytes[DL_offset + 1];
 			
 			/* PROCESS CMD ID */
-			uint16_t CMD_ID = ((uint16_t)packet_Buffer[i].packetBytes[CMD_ID_offset]) >> 8 | (uint16_t)packet_Buffer[i].packetBytes[CMD_ID_offset + 1];
+			uint16_t CMD_ID = ((uint16_t)packet_Buffer[i].packetBytes[CMD_ID_offset]) << 8 | (uint16_t)packet_Buffer[i].packetBytes[CMD_ID_offset + 1];
 			
 			/* CONFIRM CRC16 */
 			//Needs to happen before loading data into the ref system struct
@@ -163,7 +163,7 @@ void REF_Process_Packet_Buffer(refPacket *packet_Buffer, referee_data_t *ref_Dat
 			
 			//fills the packed struct with data
 			for(int i = 0; i < data_length; i++)
-				Target_Struct[i] = packetBuffer[i].packetBytes[DATA_offset + i];
+				Target_Struct[i] = packet_Buffer[i].packetBytes[DATA_offset + i];
 			
 			//clear packet after reading
 			REF_Clear_Packet(&packet_Buffer[i]);

@@ -40,8 +40,8 @@ typedef struct{
 } jetsonPacket_t;
 
 /* FUNCTIONS */
-void jetsonInitialization();
-void jetsonLoop();
+void jetsonInitialization(void);
+void jetsonLoop(void);
 
 void JETSON_Parse_Packet_Bytewise(jetsonPacket_t *tempPacket, uint8_t incomingByte);
 void JETSON_Clear_Packet(jetsonPacket_t *packet);
