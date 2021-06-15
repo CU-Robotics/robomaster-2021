@@ -37,6 +37,7 @@
 #include "turret.h"
 #include "pid.h"
 #include "constants.h"
+#include "referee.h"
 
 #include "time_manip.h"
 
@@ -48,8 +49,6 @@ const RC_ctrl_t *local_rc_ctrl;
 void masterLoop(void);
 
 
-//Testing Variables
-float speedRead = 0.0f;
 
 /**
   * @brief  The application entry point.
@@ -110,9 +109,9 @@ void masterLoop(void) {
 
   chassisLoop(local_rc_ctrl, deltaTime);
   turretLoop(local_rc_ctrl, deltaTime);
-	
-	//debug line
-  speedRead = get_chassis_motor_measure_point(1)->speed_rpm;
+	refereeLoop();
+	//read IMU
+	BMI088_read(gyro, accel, &temp);
 	
   prevTick = currentTick;
 }
