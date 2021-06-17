@@ -113,11 +113,11 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     float feederSpeed = 0.0f;
 
 		//Pick Speed	
-		if (control_input->key.v & M_C_BITMASK)
+		if (control_input->key.v & M_F_BITMASK)
 			fireRateChosen = 0;
-		else if (control_input->key.v & M_V_BITMASK)
+		else if (control_input->key.v & M_G_BITMASK)
 			fireRateChosen = 1;
-		else if (control_input->key.v & M_B_BITMASK)
+		else if (control_input->key.v & M_C_BITMASK)
 			fireRateChosen = 2;
 		
     // Fire
