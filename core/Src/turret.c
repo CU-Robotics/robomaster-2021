@@ -35,6 +35,7 @@ float pitchSetpoint = 0;
 float tempPitchPosition = 0;
 
 fp32 gyro[3], accel[3], temp;
+float prevGyroVertical;
 
 void turretInit() {
   // PID Profiles containing tuning parameters.
@@ -70,7 +71,8 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     /* Turret Code */
     // Apply offset for field-centric control
     BMI088_read(gyro, accel, &temp);
-    yawSetpoint += (gyro[2] * deltaTime) / (1000.0f);
+    yawSetpoint += (((prevGyroVertical + gyro[2]) / 2.0f) * deltaTime) / 1000.0f;
+    prevGyroVertical = gyro[2];
 
     // Mouse control
     yawSetpoint += deltaTime * M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
@@ -86,7 +88,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     // Apply pitch soft limits
     if (pitchSetpoint < M_TURRET_PITCH_LOWER_LIMIT) {
       pitchSetpoint = M_TURRET_PITCH_LOWER_LIMIT;
-    } else if (pitchSetpoint < M_TURRET_PITCH_UPPER_LIMIT) {
+    } else if (pitchSetpoint > M_TURRET_PITCH_UPPER_LIMIT) {
       pitchSetpoint = M_TURRET_PITCH_UPPER_LIMIT;
     }
 				
