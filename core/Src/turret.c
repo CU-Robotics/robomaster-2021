@@ -9,6 +9,7 @@
 #include "constants.h"
 #include "pid.h"
 #include "utils.h"
+#include "jetson.h"
 
 #include "turret.h"
 
@@ -61,7 +62,7 @@ void turretInit() {
 
   pitchRotations = 0;
   prevPitchPosition = 0;
-  //Fill pitch history with values preventing false positive hardstop reading
+  // Fill pitch history with values preventing false positive hardstop reading
   for(int i = 0; i < M_ZERO_HARDSTOP_TIME_THRESHOLD; i++)
     pitchHistory[i] = 30 * i;
 }
@@ -74,22 +75,15 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     yawSetpoint += (((prevGyroVertical + gyro[2]) / 2.0f) * deltaTime) / 1000.0f;
     prevGyroVertical = gyro[2];
 
-    // Mouse control
-    yawSetpoint += deltaTime * M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
-    pitchSetpoint += deltaTime * M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
-		
-		// Keep yaw setpoints in -2pi to 2pi range for stability
-    if (yawSetpoint > 2 * M_PI) {
-      yawSetpoint -= 2 * M_PI;
-    } else if (yawSetpoint < -2 * M_PI) {
-      yawSetpoint += 2 * M_PI;
-    }
-
-    // Apply pitch soft limits
-    if (pitchSetpoint < M_TURRET_PITCH_LOWER_LIMIT) {
-      pitchSetpoint = M_TURRET_PITCH_LOWER_LIMIT;
-    } else if (pitchSetpoint > M_TURRET_PITCH_UPPER_LIMIT) {
-      pitchSetpoint = M_TURRET_PITCH_UPPER_LIMIT;
+    // Use either aimlock or mouse control depending on selected mode
+    if ((control_input->key.v & M_SPACE_BITMASK)) {
+      // Aimlock
+      yawSetpoint = jetsonData->xPos;
+      pitchSetpoint = jetsonData->yPos + jetsonData->distance * M_TURRET_PITCH_DISTANCE_MULTIPLIER;
+    } else {
+      // Mouse control
+      yawSetpoint += deltaTime * M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
+      pitchSetpoint += deltaTime * M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
     }
 				
     // Left Quickturn
@@ -105,6 +99,20 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
       rightQuickturnAlreadyPressed = true;
     } else if (!(control_input->key.v & M_X_BITMASK)) {
       rightQuickturnAlreadyPressed = false;
+    }
+
+    // Apply pitch soft limits
+    if (pitchSetpoint < M_TURRET_PITCH_LOWER_LIMIT) {
+      pitchSetpoint = M_TURRET_PITCH_LOWER_LIMIT;
+    } else if (pitchSetpoint > M_TURRET_PITCH_UPPER_LIMIT) {
+      pitchSetpoint = M_TURRET_PITCH_UPPER_LIMIT;
+    }
+
+    // Keep yaw setpoints in -2pi to 2pi range for stability
+    if (yawSetpoint > 2 * M_PI) {
+      yawSetpoint -= 2 * M_PI;
+    } else if (yawSetpoint < -2 * M_PI) {
+      yawSetpoint += 2 * M_PI;
     }
 
     Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile, &yawState, &pitchState);

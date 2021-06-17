@@ -11,12 +11,12 @@ float calculatePID_Positional(float currentPosition, float setpoint, PIDProfile 
 
 	// Calculate error
 	if (setpoint > currentPosition) {
-		if (absValueFloat(setpoint-currentPosition) < absValueFloat(-2*M_PI + setpoint - currentPosition)) 
+		if (absValueFloat(setpoint-currentPosition) < absValueFloat(-2 * M_PI + setpoint - currentPosition)) 
 			error = setpoint - currentPosition;
 		else  
 			error = -2 * M_PI - setpoint + currentPosition;
 	} else {
-		if (absValueFloat(setpoint-currentPosition) < absValueFloat(2*M_PI - currentPosition + setpoint)) 
+		if (absValueFloat(setpoint-currentPosition) < absValueFloat(2 * M_PI - currentPosition + setpoint)) 
 			error = setpoint - currentPosition;
 		else  
 			error = 2 * M_PI + setpoint - currentPosition;

@@ -110,7 +110,6 @@ void masterLoop(void) {
   chassisLoop(local_rc_ctrl, deltaTime);
   turretLoop(local_rc_ctrl, deltaTime);
 	refereeLoop();
-	//read IMU
 	
   prevTick = currentTick;
 }
