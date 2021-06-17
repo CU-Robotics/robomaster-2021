@@ -39,11 +39,16 @@ typedef struct{
 	uint8_t isComplete;
 } jetsonPacket_t;
 
+//globally available jetson data
+jetsonData_t jetsonData;
+
 /* FUNCTIONS */
 void jetsonInitialization(void);
 void jetsonLoop(void);
 
 void JETSON_Parse_Packet_Bytewise(jetsonPacket_t *tempPacket, uint8_t incomingByte);
 void JETSON_Clear_Packet(jetsonPacket_t *packet);
+void JETSON_Write_Packet_To_Buffer(jetsonPacket_t *tempPacket, jetsonPacket_t *packet_Buffer);
+void JETSON_Process_Packet_Buffer(jetsonPacket_t *packet_Buffer, jetsonData_t *jetson_Data);
 
 #endif

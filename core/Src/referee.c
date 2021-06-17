@@ -3,8 +3,7 @@
 #include "CRC.h"
 #include "stm32f4xx_hal.h"
 
-//globally available ref variables
-referee_data_t refData;
+//locally available ref variables
 refPacket refTempPacket;
 refPacket refPacketBuffer[REF_PACKET_BUFFER_LENGTH];
 

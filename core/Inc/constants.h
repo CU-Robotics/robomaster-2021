@@ -28,6 +28,7 @@
 #define M_TURRET_PITCH_LOWER_LIMIT -0.3
 #define M_TURRET_PITCH_UPPER_LIMIT 0.7
 #define M_TURRET_PITCH_TEMP_LIMIT 70
+#define M_BATTERY_VOLTAGE 24.0f
 
 // -- GAME CONFIGURATION --
 // Chassis
@@ -46,6 +47,7 @@
 
 // -- MOTORS --
 // M3508
+#define M_M3508_CURRENT_MAX		20.0f												// Maximum current of motor in amps
 #define M_M3508_CURRENT_SCALE 16384.0f                  	// Scale of M3508 motor input, where this value is max current
 #define M_M3508_ENCODER_SCALE 8191.0f                   	// Scale of M3508 encoder output, where this value is one full rotation
 #define M_M3508_REDUCTION_RATIO 1 / (3591.0f / 187.0f)  	// The gear ratio between the encoder and the output shaft in an M3508

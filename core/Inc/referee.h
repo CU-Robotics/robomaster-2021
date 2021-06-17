@@ -263,6 +263,8 @@ typedef struct{
 
 
 
+//globally available ref status
+static referee_data_t refData;
 
 /* FUNCTIONS */
 

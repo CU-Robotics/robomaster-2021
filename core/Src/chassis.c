@@ -6,6 +6,7 @@
 
 #include "pid.h"
 #include "utils.h"
+#include "referee.h"
 #include "constants.h"
 
 #include "chassis.h"
@@ -71,6 +72,21 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	chassis.backLeft = calculatePID_Speed(speed_3, chassis.backLeft * M_CHASSIS_MAX_RPM, chassisPID_Profile, &backLeftState);
 	chassis.frontLeft = calculatePID_Speed(speed_4, chassis.frontLeft * M_CHASSIS_MAX_RPM, chassisPID_Profile, &frontLeftState);
 
+	//Read robot power limit in watts? from ref struct
+	uint16_t powerLimit = refData.REF_robot_status.chassis_power_limit;
+	
+	//Calculate chassis power usage in watts
+	fp32 totalAmperage = M_M3508_CURRENT_MAX*(absValueFloat(chassis.frontRight) + absValueFloat(chassis.backRight) + absValueFloat(chassis.frontLeft) + absValueFloat(chassis.backLeft));
+	fp32 totalWattage = totalAmperage* M_BATTERY_VOLTAGE;
+	//add 5% buffer to usage
+	totalWattage *= 1.05f;
+	
+	//reduce each motor by scaling factor
+	chassis.frontRight = chassis.frontRight * (fp32) powerLimit / totalWattage;
+	chassis.backRight = chassis.backRight * (fp32) powerLimit / totalWattage;
+	chassis.backLeft = chassis.backLeft * (fp32) powerLimit / totalWattage;
+	chassis.frontLeft = chassis.frontLeft * (fp32) powerLimit / totalWattage;
+	
  	CAN_cmd_chassis((int16_t) (chassis.frontRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_M3508_CURRENT_SCALE));
 }
 
