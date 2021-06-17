@@ -33,6 +33,9 @@ void chassisInit() {
 }
 
 void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
+	BMI088_read(gyro, accel, &temp);
+    yawSetpoint += (gyro[2] * deltaTime) / (1000.0f);
+
 	//Collect Controller input
 	xThrottle = 0.0f;
 	if (control_input->key.v & M_W_BITMASK) {
