@@ -75,6 +75,9 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	//Read robot power limit in watts? from ref struct
 	uint16_t powerLimit = refData.REF_robot_status.chassis_power_limit;
 	
+	//Get real power usage, could be used
+	//float realWattage = refData.REF_heat_data.chassis_power;
+	
 	//Calculate chassis power usage in watts
 	fp32 totalAmperage = M_M3508_CURRENT_MAX*(absValueFloat(chassis.frontRight) + absValueFloat(chassis.backRight) + absValueFloat(chassis.frontLeft) + absValueFloat(chassis.backLeft));
 	fp32 totalWattage = totalAmperage* M_BATTERY_VOLTAGE;
