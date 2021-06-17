@@ -31,6 +31,8 @@
 #define M_BATTERY_VOLTAGE 24.0f
 
 // -- GAME CONFIGURATION --
+#define CONF_FULL_SPEED				1.0f
+#define CONF_SLOW_WALK_SPEED 	0.3f
 // Chassis
 #define CONF_CHASSIS_CURRENT_LIMIT_0 (40.0f / M_BATTERY_VOLTAGE)                                                                  // Level 0
 #define CONF_CHASSIS_CURRENT_LIMIT_POW { (60.0f / M_BATTERY_VOLTAGE), (80.0f / M_BATTERY_VOLTAGE), (100.0f / M_BATTERY_VOLTAGE) } // Power-Focused Chassis

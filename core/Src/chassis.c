@@ -21,6 +21,8 @@ float xThrottle = 0;
 float yThrottle = 0;
 float rotation = 0;
 
+float chassisSpeed = 1.0f;
+
 void chassisInit() {
     // PID Profiles containing tuning parameters.
     chassisPID_Profile.kP = 0.0008f;
@@ -35,26 +37,32 @@ void chassisInit() {
 
 void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	//Collect Controller input
+	if (control_input->key.v & M_SHIFT_BITMASK){
+		chassisSpeed = CONF_SLOW_WALK_SPEED;
+	} else{
+		chassisSpeed = CONF_FULL_SPEED;
+	}
+	
 	xThrottle = 0.0f;
 	if (control_input->key.v & M_W_BITMASK) {
-		xThrottle += 1.0f;
+		xThrottle += chassisSpeed;
 	}
 	if (control_input->key.v & M_S_BITMASK) {
-		xThrottle -= 1.0f;
+		xThrottle -= chassisSpeed;
 	}
 	yThrottle = 0.0f;
 	if (control_input->key.v & M_A_BITMASK) {
-		yThrottle -= 1.0f;
+		yThrottle -= chassisSpeed;
 	}
 	if (control_input->key.v & M_D_BITMASK) {
-		yThrottle += 1.0f;
+		yThrottle += chassisSpeed;
 	}
 	rotation = 0.0f;
 	if (control_input->key.v & M_Q_BITMASK) {
-		rotation -= 1.0f;
+		rotation -= chassisSpeed;
 	}
 	if (control_input->key.v & M_E_BITMASK) {	
-		rotation += 1.0f;
+		rotation += chassisSpeed;
 	}
 
 	//Calculate mechanum wheel velocities for target vector
