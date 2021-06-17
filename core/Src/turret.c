@@ -9,6 +9,7 @@
 #include "constants.h"
 #include "pid.h"
 #include "utils.h"
+#include "referee.h"
 
 #include "turret.h"
 
@@ -29,6 +30,7 @@ int pitchRotations;
 int prevPitchPosition;
 int pitchHistory[M_ZERO_HARDSTOP_TIME_THRESHOLD];
 int pitchOffset;
+int fireRateChosen = 0;
 
 float yawSetpoint = 0;
 float pitchSetpoint = 0;
@@ -110,12 +112,29 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     /* Shooter Code */
     float feederSpeed = 0.0f;
 
+		//Pick Speed	
+		if (control_input->key.v & M_C_BITMASK)
+			fireRateChosen = 0;
+		else if (control_input->key.v & M_V_BITMASK)
+			fireRateChosen = 1;
+		else if (control_input->key.v & M_B_BITMASK)
+			fireRateChosen = 2;
+		
     // Fire
     if (control_input->mouse.press_l) {
       fric_on((uint16_t) ((M_SNAIL_SPEED_OFFSET + M_SNAIL_SPEED_SCALE) * M_SHOOTER_CURRENT_PERCENT));
       flywheelSpinupTracker += deltaTime;
       if (flywheelSpinupTracker >= M_SHOOTER_DELAY) {
-        feederSpeed = M_M2006_CURRENT_SCALE * -CONF_SHOOTER_FIRERATE_BURST;
+				switch(fireRateChosen){
+					case 0:
+						feederSpeed = M_M2006_CURRENT_SCALE * -CONF_SHOOTER_FIRERATE_BURST;
+					case 1:
+						feederSpeed = M_M2006_CURRENT_SCALE * -CONF_SHOOTER_FIRERATE_HIGH;
+					case 2:
+						feederSpeed = M_M2006_CURRENT_SCALE * -CONF_SHOOTER_FIRERATE_LOW;
+					default:
+						feederSpeed = M_M2006_CURRENT_SCALE * -CONF_SHOOTER_FIRERATE_BURST;
+				}
         flywheelSpinupTracker = M_SHOOTER_DELAY;
       }
     // Prespin

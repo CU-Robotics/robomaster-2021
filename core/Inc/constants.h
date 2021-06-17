@@ -79,8 +79,13 @@
 #define M_Q_BITMASK BIT6
 #define M_E_BITMASK BIT7
 #define M_R_BITMASK BIT8
+#define M_F_BITMASK BIT9
+#define M_G_BITMASK BIT10
 #define M_Z_BITMASK BIT11
 #define M_X_BITMASK BIT12
+#define M_C_BITMASK BIT13
+#define M_V_BITMASK BIT14
+#define M_B_BITMASK BIT15
 
 #define BIT0  0x0001
 #define BIT1  0x0002
