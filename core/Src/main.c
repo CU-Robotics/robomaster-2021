@@ -37,7 +37,7 @@
 #include "turret.h"
 #include "pid.h"
 #include "constants.h"
-#include "referee.h"
+//#include "referee.h"
 
 #include "time_manip.h"
 
@@ -97,6 +97,7 @@ int main(void) {
   /* Init functions */
   chassisInit();
   turretInit();
+  //refereeInit();
 
   /* Run master loop function on a timer */
   while (1) { function_with_interval(&masterLoop, NULL, M_MASTER_LOOP_INTERVAL); };
@@ -109,7 +110,7 @@ void masterLoop(void) {
 
   chassisLoop(local_rc_ctrl, deltaTime);
   turretLoop(local_rc_ctrl, deltaTime);
-	refereeLoop();
+	//refereeLoop();
 	
   prevTick = currentTick;
 }

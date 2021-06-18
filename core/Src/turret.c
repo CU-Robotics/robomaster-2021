@@ -78,15 +78,15 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     prevGyroVertical = gyro[2];
 
     // Use either aimlock or mouse control depending on selected mode
-    if ((control_input->key.v & M_SPACE_BITMASK)) {
+    /*if ((control_input->key.v & M_SPACE_BITMASK)) {
       // Aimlock
       yawSetpoint = jetsonData.xPos;
       pitchSetpoint = jetsonData.yPos + jetsonData.distance * M_TURRET_PITCH_DISTANCE_MULTIPLIER;
-    } else {
+    } else {*/
       // Mouse control
       yawSetpoint += deltaTime * M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
       pitchSetpoint += deltaTime * M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
-    }
+    //}
 				
     // Left Quickturn
     if ((control_input->key.v & M_Z_BITMASK) && !leftQuickturnAlreadyPressed) {
