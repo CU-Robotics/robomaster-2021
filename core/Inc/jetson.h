@@ -40,7 +40,7 @@ typedef struct{
 } jetsonPacket_t;
 
 //globally available jetson data
-jetsonData_t jetsonData;
+static jetsonData_t jetsonData;
 
 /* FUNCTIONS */
 void jetsonInitialization(void);
