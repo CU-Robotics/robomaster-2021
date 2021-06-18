@@ -221,6 +221,25 @@ void CAN_cmd_gimbal_working(int16_t yaw, int16_t pitch, int16_t shoot, int16_t r
     HAL_CAN_AddTxMessage(&CHASSIS_CAN, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
 }
 
+//Written by Ben Pera
+void CAN_cmd_yaw(int16_t yaw)
+{
+    uint32_t send_mail_box;
+    chassis_tx_message.StdId = CAN_YAW_ALL_ID2;
+    chassis_tx_message.IDE = CAN_ID_STD;
+    chassis_tx_message.RTR = CAN_RTR_DATA;
+    chassis_tx_message.DLC = 0x08;
+    chassis_can_send_data[0] = 0 >> 8;
+    chassis_can_send_data[1] = 0;
+    chassis_can_send_data[2] = 0 >> 8;
+    chassis_can_send_data[3] = 0;
+    chassis_can_send_data[4] = yaw >> 8;
+    chassis_can_send_data[5] = yaw;
+    chassis_can_send_data[6] = 0 >> 8;
+    chassis_can_send_data[7] = 0;
+
+    HAL_CAN_AddTxMessage(&CHASSIS_CAN, &chassis_tx_message, chassis_can_send_data, &send_mail_box);
+}
 /**
   * @brief          return the yaw 6020 motor data point
   * @param[in]      none

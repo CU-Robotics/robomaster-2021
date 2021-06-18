@@ -136,12 +136,14 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
       flywheelSpinupTracker += deltaTime;
       if (flywheelSpinupTracker >= M_SHOOTER_DELAY) {
 				switch(fireRateChosen){
+					/*
 					case 0:
 						feederSpeed = M_M2006_CURRENT_SCALE * -CONF_SHOOTER_FIRERATE_BURST;
 					case 1:
 						feederSpeed = M_M2006_CURRENT_SCALE * -CONF_SHOOTER_FIRERATE_HIGH;
 					case 2:
 						feederSpeed = M_M2006_CURRENT_SCALE * -CONF_SHOOTER_FIRERATE_LOW;
+					*/
 					default:
 						feederSpeed = M_M2006_CURRENT_SCALE * -CONF_SHOOTER_FIRERATE_BURST;
 				}
@@ -169,9 +171,10 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     if (get_pitch_gimbal_motor_measure_point()->temperate > M_TURRET_PITCH_TEMP_LIMIT) {
       turret.pitch = 0.0f;
     }
-
+		
     /* Set motor output values */
     CAN_cmd_gimbal_working(turret.yaw * M_GM6020_VOLTAGE_SCALE, turret.pitch * M_M3508_CURRENT_SCALE, feederSpeed, 0);
+		//CAN_cmd_yaw(turret.yaw * M_GM6020_VOLTAGE_SCALE);
 
   /* Zero Sequence */
   } else {

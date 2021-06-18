@@ -10,6 +10,7 @@ refPacket refPacketBuffer[REF_PACKET_BUFFER_LENGTH];
 /* USART6 is used for the referee system and corresponds to UART2 on the board, the 3-pin port */
 //This interrupt is called everytime a byte is recieved
 //The byte is then processed bytewise in a temporary packet which is transfered to a buffer when complete
+/*
 void USART6_IRQHandler(void)  
 {
     volatile uint8_t receive;
@@ -27,6 +28,7 @@ void USART6_IRQHandler(void)
         HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
     }
 }
+*/
 //gets called on initialization, clears buffer and packets
 void refereeInitialization(void){
 	REF_Clear_Packet(&refTempPacket);

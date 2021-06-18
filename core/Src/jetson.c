@@ -7,6 +7,7 @@ jetsonPacket_t jetsonTempPacket;
 jetsonPacket_t jetsonPacketBuffer[JETSON_BUFFER_LENGTH];
 
 /* USART1 is used for the jetson nano and corresponds to UART1 on the board, the 4-pin port */
+/*
 void USART1_IRQHandler(void){
     volatile uint8_t receive;
     //receive interrupt
@@ -24,7 +25,7 @@ void USART1_IRQHandler(void){
     }
 
 }
-
+*/
 
 //gets called on initialization, clears buffer and packets
 void jetsonInitialization(){

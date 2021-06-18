@@ -2,6 +2,7 @@
 #include "usart.h"
 #include "remote_control.h"
 #include "can.h"
+#include "math.h"
 #include "CAN_receive.h"
 
 #include "pid.h"
@@ -25,12 +26,12 @@ float chassisSpeed = 1.0f;
 
 void chassisInit() {
     // PID Profiles containing tuning parameters.
-    chassisPID_Profile.kP = 0.0008f;
-    chassisPID_Profile.kI = 0.000001f;
+    chassisPID_Profile.kP = 0.0004f; // 0.0008f This is overtuned
+    chassisPID_Profile.kI = 0.000000f; // 0.000001f This is overtuned
     chassisPID_Profile.kD = 0.0f;
 
 	frontRightState.lastError = 0;
-    backRightState.lastError = 0;
+  backRightState.lastError = 0;
 	backLeftState.lastError = 0;
 	frontLeftState.lastError = 0;
 }
@@ -43,31 +44,31 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 		chassisSpeed = CONF_FULL_SPEED;
 	}
 	// Turret-Relative Movement
-	float yawPosition = (get_yaw_gimbal_motor_measure_point()->ecd);
-	float relativeAngle = (2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE;
+	//float yawPosition = (get_yaw_gimbal_motor_measure_point()->ecd);
+	//float relativeAngle = (2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE;
 
 	// Collect Controller Input
 	xThrottle = 0.0f;
 	if (control_input->key.v & M_W_BITMASK) {
-		xThrottle += chassisSpeed*cos(relativeAngle);
+		xThrottle += 1.0f;//chassisSpeed*cos(relativeAngle);
 	}
 	if (control_input->key.v & M_S_BITMASK) {
-		xThrottle -= chassisSpeed*cos(relativeAngle);
+		xThrottle -= 1.0f;//chassisSpeed*cos(relativeAngle);
 	}
 	yThrottle = 0.0f;
 	if (control_input->key.v & M_A_BITMASK) {
-		yThrottle -= chassisSpeed*sin(relativeAngle);
+		yThrottle -= M_HORIZONTAL_MULTIPLIER*1.0f;//chassisSpeed*sin(relativeAngle);
 	}
 	if (control_input->key.v & M_D_BITMASK) {
-		yThrottle += chassisSpeed*sin(relativeAngle);
+		yThrottle += M_HORIZONTAL_MULTIPLIER*1.0f;//chassisSpeed*sin(relativeAngle);
 
 	}
 	rotation = 0.0f;
 	if (control_input->key.v & M_Q_BITMASK) {
-		rotation -= chassisSpeed;
+		rotation -= 1.0f;//chassisSpeed;
 	}
 	if (control_input->key.v & M_E_BITMASK) {	
-		rotation += chassisSpeed;
+		rotation += 1.0f;//chassisSpeed;
 	}
 
 	// Calculate mecanum wheel velocities for target vector
@@ -85,6 +86,7 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	chassis.backLeft = calculatePID_Speed(speed_3, chassis.backLeft * M_CHASSIS_MAX_RPM, chassisPID_Profile, &backLeftState);
 	chassis.frontLeft = calculatePID_Speed(speed_4, chassis.frontLeft * M_CHASSIS_MAX_RPM, chassisPID_Profile, &frontLeftState);
 
+	/*
 	//Read robot power limit in watts? from ref struct
 	uint16_t powerLimit = refData.REF_robot_status.chassis_power_limit;
 	
@@ -102,8 +104,9 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	chassis.backRight = chassis.backRight * (fp32) powerLimit / totalWattage;
 	chassis.backLeft = chassis.backLeft * (fp32) powerLimit / totalWattage;
 	chassis.frontLeft = chassis.frontLeft * (fp32) powerLimit / totalWattage;
+	*/
 	
- 	CAN_cmd_chassis((int16_t) (chassis.frontRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backRight * M_M3508_CURRENT_SCALE), (int16_t) (chassis.backLeft * M_M3508_CURRENT_SCALE), (int16_t) (chassis.frontLeft * M_M3508_CURRENT_SCALE));
+ 	CAN_cmd_chassis((int16_t) (M_MOTOR_1_MULTIPLIER*chassis.frontRight * M_M3508_CURRENT_SCALE), (int16_t) (M_MOTOR_2_MULTIPLIER*chassis.backRight * M_M3508_CURRENT_SCALE), (int16_t) (M_MOTOR_3_MULTIPLIER*chassis.backLeft * M_M3508_CURRENT_SCALE), (int16_t) (M_MOTOR_4_MULTIPLIER*chassis.frontLeft * M_M3508_CURRENT_SCALE));
 }
 
 Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottle) {

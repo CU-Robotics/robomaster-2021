@@ -37,10 +37,12 @@ typedef enum
     CAN_3508_M4_ID = 0x204,
 
     CAN_YAW_MOTOR_ID = 0x205,
-    CAN_PIT_MOTOR_ID = 0x206,
+    CAN_PIT_MOTOR_ID = 0x206, 
     CAN_M2006_FEEDER_ID = 0x207,
     CAN_GIMBAL_ALL_ID = 0x1FF,
-		CAN_CHASSIS_ALL_ID2 = 0x1FF
+		CAN_CHASSIS_ALL_ID2 = 0x1FF,
+		CAN_YAW_ALL_ID2 = 0x2FF
+
 
 } can_msg_id_e;
 
@@ -72,6 +74,7 @@ typedef struct
   * @retval         none
   */
 extern void CAN_cmd_gimbal(int16_t yaw, int16_t pitch, int16_t shoot, int16_t rev);
+extern void CAN_cmd_yaw(int16_t yaw);
 extern void ourCan(CAN_HandleTypeDef *hcan);
 /**
   * @brief          send CAN packet of ID 0x700, it will set chassis motor 3508 to quick ID setting
