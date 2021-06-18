@@ -26,12 +26,12 @@ float chassisSpeed = 1.0f;
 
 void chassisInit() {
     // PID Profiles containing tuning parameters.
-    chassisPID_Profile.kP = 0.0004f; // 0.0008f This is overtuned
+    chassisPID_Profile.kP = 0.0003f; // 0.0008f This is overtuned
     chassisPID_Profile.kI = 0.000000f; // 0.000001f This is overtuned
-    chassisPID_Profile.kD = 0.0f;
+    chassisPID_Profile.kD = 0.0001f;
 
 	frontRightState.lastError = 0;
-  backRightState.lastError = 0;
+    backRightState.lastError = 0;
 	backLeftState.lastError = 0;
 	frontLeftState.lastError = 0;
 }
@@ -44,8 +44,8 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 		chassisSpeed = CONF_FULL_SPEED;
 	}
 	// Turret-Relative Movement
-	//float yawPosition = (get_yaw_gimbal_motor_measure_point()->ecd);
-	//float relativeAngle = (2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE;
+	float yawPosition = (get_yaw_gimbal_motor_measure_point()->ecd);
+	float relativeAngle = (2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE;
 
 	// Collect Controller Input
 	xThrottle = 0.0f;

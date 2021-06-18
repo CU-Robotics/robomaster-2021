@@ -73,9 +73,9 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
   if (zeroed) {
     /* Turret Code */
     // Apply offset for field-centric control
-    BMI088_read(gyro, accel, &temp);
+    /*BMI088_read(gyro, accel, &temp);
     yawSetpoint += (((prevGyroVertical + gyro[2]) / 2.0f) * deltaTime) / 1000.0f;
-    prevGyroVertical = gyro[2];
+    prevGyroVertical = gyro[2];*/
 
     // Use either aimlock or mouse control depending on selected mode
     /*if ((control_input->key.v & M_SPACE_BITMASK)) {
@@ -89,7 +89,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
     //}
 				
     // Left Quickturn
-    if ((control_input->key.v & M_Z_BITMASK) && !leftQuickturnAlreadyPressed) {
+    /*if ((control_input->key.v & M_Z_BITMASK) && !leftQuickturnAlreadyPressed) {
       yawSetpoint -= (M_PI / 2.0f);
       leftQuickturnAlreadyPressed = true;
     } else if (!(control_input->key.v & M_Z_BITMASK)) {
@@ -101,7 +101,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
       rightQuickturnAlreadyPressed = true;
     } else if (!(control_input->key.v & M_X_BITMASK)) {
       rightQuickturnAlreadyPressed = false;
-    }
+    }*/
 
     // Apply pitch soft limits
     if (pitchSetpoint < M_TURRET_PITCH_LOWER_LIMIT) {
@@ -178,23 +178,10 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 
   /* Zero Sequence */
   } else {
-    // Move pitch motor towards front endstop
-    CAN_cmd_gimbal_working(0, 4000, 0, 0);
-    
     // Capture encoder value
     float pitchPosition = (get_pitch_gimbal_motor_measure_point()->ecd);
-
-    // Rotate pitch history
-    for (int i = 0; i < M_ZERO_HARDSTOP_TIME_THRESHOLD - 1; i++){
-      pitchHistory[i] = pitchHistory[i+1];
-    }
-    pitchHistory[M_ZERO_HARDSTOP_TIME_THRESHOLD - 1] = pitchPosition;
-
-    // Check if at hardstop
-    if(isM3508AtHardstop(pitchHistory)){
-      zeroed = true;
-      pitchOffset = pitchPosition;
-    }
+    zeroed = true;
+    pitchOffset = pitchPosition;
   }
 }
 

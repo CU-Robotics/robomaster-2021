@@ -19,7 +19,7 @@
 #define M_MOUSE_Y_SCALE 3000.0f
 
 // -- PHYSICAL CONSTRAINTS --
-#define M_CHASSIS_MAX_RPM 1000.0f							// Chassis motors are capped at this speed
+#define M_CHASSIS_MAX_RPM 450.0f							// Chassis motors are capped at this speed
 #define M_SHOOTER_CURRENT_PERCENT 1.0f                  	// What percent power to run the shooter at. Used to keep the projectile exit speed within regulations.
 #define M_SHOOTER_DELAY 60
 #define M_SHOOTER_UNJAM_PERIOD 200
@@ -73,7 +73,7 @@
 // -- MISC --
 #define M_MASTER_LOOP_INTERVAL 2 					    						// Code runs at 500Hz (2ms period)
 #define M_MASTER_LOOP_TIMEOUT 5
-#define M_ZERO_HARDSTOP_TIME_THRESHOLD 50 			    			// Motor must be held stationary for at least 50ms to detect a hardstop
+#define M_ZERO_HARDSTOP_TIME_THRESHOLD 200 			    			// Motor must be held stationary for at least 50ms to detect a hardstop
 #define M_ZERO_HARDSTOP_RANGE_THRESHOLD M_PI / (128.0f)	  // All encoder values must be this close to each other in order to count as stationary
 #define M_PID_INTEGRAL_BUFFER_SIZE 100                 	  // 100ms
 

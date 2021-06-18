@@ -96,7 +96,7 @@ int main(void) {
 		
   /* Init functions */
   chassisInit();
-  turretInit();
+  //turretInit();
   //refereeInit();
 
   /* Run master loop function on a timer */
