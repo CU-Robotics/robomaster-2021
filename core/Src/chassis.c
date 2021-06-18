@@ -42,20 +42,25 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	} else{
 		chassisSpeed = CONF_FULL_SPEED;
 	}
-	
+	// Turret-Relative Movement
+	float yawPosition = (get_yaw_gimbal_motor_measure_point()->ecd);
+	float relativeAngle = (2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE;
+
+	// Collect Controller Input
 	xThrottle = 0.0f;
 	if (control_input->key.v & M_W_BITMASK) {
-		xThrottle += chassisSpeed;
+		xThrottle += chassisSpeed*cos(relativeAngle);
 	}
 	if (control_input->key.v & M_S_BITMASK) {
-		xThrottle -= chassisSpeed;
+		xThrottle -= chassisSpeed*cos(relativeAngle);
 	}
 	yThrottle = 0.0f;
 	if (control_input->key.v & M_A_BITMASK) {
-		yThrottle -= chassisSpeed;
+		yThrottle -= chassisSpeed*sin(relativeAngle);
 	}
 	if (control_input->key.v & M_D_BITMASK) {
-		yThrottle += chassisSpeed;
+		yThrottle += chassisSpeed*sin(relativeAngle);
+
 	}
 	rotation = 0.0f;
 	if (control_input->key.v & M_Q_BITMASK) {
@@ -65,16 +70,16 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 		rotation += chassisSpeed;
 	}
 
-	//Calculate mechanum wheel velocities for target vector
+	// Calculate mecanum wheel velocities for target vector
  	Chassis chassis = calculateMecanum(xThrottle, yThrottle, rotation);
 	
-	//convert read RPM (before gearing) to true output RPM
+	// Convert read RPM (before gearing) to true output RPM
 	float speed_1 = get_chassis_motor_measure_point(1)->speed_rpm * M_M3508_REDUCTION_RATIO;
 	float speed_2 = get_chassis_motor_measure_point(2)->speed_rpm * M_M3508_REDUCTION_RATIO;
 	float speed_3 = get_chassis_motor_measure_point(3)->speed_rpm * M_M3508_REDUCTION_RATIO;
 	float speed_4 = get_chassis_motor_measure_point(4)->speed_rpm * M_M3508_REDUCTION_RATIO;
 	
-	//Calculate PID based on current state, and desired wheel velocities
+	// Calculate PID based on current state, and desired wheel velocities
 	chassis.frontRight = calculatePID_Speed(speed_1, chassis.frontRight * M_CHASSIS_MAX_RPM, chassisPID_Profile, &frontRightState);
 	chassis.backRight = calculatePID_Speed(speed_2, chassis.backRight * M_CHASSIS_MAX_RPM, chassisPID_Profile, &backRightState);
 	chassis.backLeft = calculatePID_Speed(speed_3, chassis.backLeft * M_CHASSIS_MAX_RPM, chassisPID_Profile, &backLeftState);
@@ -114,7 +119,7 @@ Chassis calculateMecanum(float xThrottle, float yThrottle, float rotationThrottl
 	if (absValueFloat(backRight) > max) max = absValueFloat(backRight);
 	if (absValueFloat(backLeft) > max) max = absValueFloat(backLeft);
 
-	//Normalize power to scale from -1 to 1
+	// Normalize power to scale from -1 to 1
 	// If the max value is greater than 1.0, divide all the motor power variables by the max value, forcing all magnitudes to be less than or equal to 1.0.
 	if (max > 1.0f) {
 		frontRight /= max;
