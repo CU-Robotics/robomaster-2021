@@ -48,14 +48,15 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	float relativeAngle = (2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE;
 
 	// Collect Controller Input
-	xThrottle = 0.0f;
+	xThrottle = control_input->rc.ch[1] * 1000;
+	yThrottle = control_input->rc.ch[0] * 1000;
+	
 	if (control_input->key.v & M_W_BITMASK) {
 		xThrottle += 1.0f;//chassisSpeed*cos(relativeAngle);
 	}
 	if (control_input->key.v & M_S_BITMASK) {
 		xThrottle -= 1.0f;//chassisSpeed*cos(relativeAngle);
 	}
-	yThrottle = 0.0f;
 	if (control_input->key.v & M_A_BITMASK) {
 		yThrottle -= M_HORIZONTAL_MULTIPLIER*1.0f;//chassisSpeed*sin(relativeAngle);
 	}
@@ -63,7 +64,8 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 		yThrottle += M_HORIZONTAL_MULTIPLIER*1.0f;//chassisSpeed*sin(relativeAngle);
 
 	}
-	rotation = 0.0f;
+	
+	rotation = control_input->rc.ch[4] * 1000;
 	if (control_input->key.v & M_Q_BITMASK) {
 		rotation -= 1.0f;//chassisSpeed;
 	}

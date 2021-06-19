@@ -21,7 +21,7 @@
 // -- PHYSICAL CONSTRAINTS --
 #define M_CHASSIS_MAX_RPM 450.0f							// Chassis motors are capped at this speed
 #define M_SHOOTER_CURRENT_PERCENT 1.0f                  	// What percent power to run the shooter at. Used to keep the projectile exit speed within regulations.
-#define M_SHOOTER_DELAY 60
+#define M_SHOOTER_DELAY 200
 #define M_SHOOTER_UNJAM_PERIOD 200
 #define M_FEEDER_UNJAM_CURRENT_PERCENT 0.5f                // What percent power to run the feeder when unjaming it
 #define M_FEEDFORWARD_PHASE 1.0f
@@ -44,7 +44,7 @@
 #define CONF_CHASSIS_CURRENT_LIMIT_POW { (60.0f / M_BATTERY_VOLTAGE), (80.0f / M_BATTERY_VOLTAGE), (100.0f / M_BATTERY_VOLTAGE) } // Power-Focused Chassis
 #define CONF_CHASSIS_CURRENT_LIMIT_HP { (45.0f / M_BATTERY_VOLTAGE), (50.0f / M_BATTERY_VOLTAGE), (55.0f / M_BATTERY_VOLTAGE) }   // HP-Focused Chassis
 // Shooter
-#define CONF_SHOOTER_SPEED_PERCENTAGE_0 0.70f                               // Level 0
+#define CONF_SHOOTER_SPEED_PERCENTAGE_0 0.40f                               // Level 0
 #define CONF_SHOOTER_SPEED_PERCENTAGE_BURST { (0.70f), (0.70f), (0.70f) }   // Burst-Focused Shooter
 #define CONF_SHOOTER_SPEED_PERCENTAGE_COOLING { (0.70f), (0.80f), (0.80f) } // Cooling-Focused Shooter
 #define CONF_SHOOTER_SPEED_PERCENTAGE_SPEED { (0.90f), (0.90f), (0.90f) }   //Projectile Speed-Focused Shooter
