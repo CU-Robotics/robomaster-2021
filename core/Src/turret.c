@@ -16,8 +16,10 @@
 
 PIDProfile yawProfile;
 PIDProfile pitchProfile;
+PIDProfile feederProfile;
 PIDState yawState;
 PIDState pitchState;
+PIDState feederState;
 
 int pitchRotations;
 int prevPitchPosition;
@@ -27,29 +29,50 @@ float yawSetpoint = 0;
 float pitchSetpoint = 0;
 float tempPitchPosition = 0;
 
+int flywheelSpeed = 0;
+	
+bool oddLoop;
+
 void turretInit() {
   // PID Profiles containing tuning parameters.
-  yawProfile.kP = 16.0f / (8 * M_PI);
+  yawProfile.kP = 20.0f / (8 * M_PI);
   yawProfile.kI = 0.00025f / (8 * M_PI);
-  yawProfile.kD = 4.0f / (8 * M_PI);
+  yawProfile.kD = 25.0f / (8 * M_PI);
 
   pitchProfile.kP = 50.0f / (8 * M_PI);
   pitchProfile.kI = 0.0f / (8 * M_PI);
   pitchProfile.kD = 5.0f / (8 * M_PI);
   pitchProfile.kF = 4.20f / (8 * M_PI);
 
+	feederProfile.kP = 0.1f;
+	feederProfile.kI = 0.01f;
+	feederProfile.kD = 0.0f;
+	
+	
   // PID States
   yawState.lastError = 0;
   pitchState.lastError = 0;
+	feederState.lastError = 0;
 
   pitchRotations = 0;
   prevPitchPosition = 0;
 	
+
 	float pitchPosition = (get_pitch_gimbal_motor_measure_point()->ecd);
 	pitchOffset = pitchPosition;
+	
+	oddLoop = false;
 }
 
 void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
+	//can re-initialization
+	if(control_input->key.v & M_F_BITMASK){
+		MX_CAN1_Init();
+		MX_CAN2_Init();
+	}
+	
+	oddLoop = !oddLoop;
+	
 	yawSetpoint += control_input->rc.ch[2] * 1000;
 	pitchSetpoint += control_input->rc.ch[3] * 1000;
 
@@ -70,20 +93,30 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 		yawSetpoint += 2 * M_PI;
 	}
 
+	
 	Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile, &yawState, &pitchState);
 
 	// Shooter Code
 	float feederSpeed = 0.0f;
-	
+
+
 	// Fire
 	if (control_input->mouse.press_l) {
-		fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET + (M_SNAIL_SPEED_SCALE * M_SHOOTER_CURRENT_PERCENT)));
-		feederSpeed = -M_M2006_CURRENT_SCALE * CONF_SHOOTER_FIRERATE_BURST;
+		fric_on((uint16_t) (1023)); //28
+		//fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET + (M_SNAIL_SPEED_SCALE * M_SHOOTER_CURRENT_PERCENT)));
+		feederSpeed = -M_M2006_CURRENT_SCALE * 0.05; // * CONF_SHOOTER_FIRERATE_BURST;
+			if(control_input->key.v & M_V_BITMASK){
+				feederSpeed = -M_M2006_CURRENT_SCALE * 0.1;
+	}
 	// Prespin
-	} else if(control_input->mouse.press_r){
-		fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET + (M_SNAIL_SPEED_SCALE * M_SHOOTER_CURRENT_PERCENT)));
+	} else if(control_input->mouse.press_r) {
+		fric_on((uint16_t) (1023));
+		//fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET + (M_SNAIL_SPEED_SCALE * M_SHOOTER_CURRENT_PERCENT)));
 	// Unjam
-	} else {
+	} else if (control_input->key.v & M_R_BITMASK) {
+		feederSpeed = M_M2006_CURRENT_SCALE * 0.05;
+		fric_on((uint16_t) (1025));
+	}else {
 		fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET));
 	}
 
@@ -91,6 +124,15 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 		turret.pitch = 0.0f;
 	}
 
+	if (turret.yaw > M_GM6020_VOLTAGE_MAX) {
+		turret.yaw = M_GM6020_VOLTAGE_MAX;
+	}
+	
+  float feederRPM = (get_trigger_motor_measure_point()->speed_rpm);
+	
+	//feeder PID
+	feederSpeed = calculatePID_Speed(feederRPM,feederSpeed,feederProfile,&feederState);
+	
 	// Set motor output values 
 	CAN_cmd_gimbal_working(turret.yaw * M_GM6020_VOLTAGE_SCALE, turret.pitch * M_M3508_CURRENT_SCALE, feederSpeed, 0);
 	//CAN_cmd_yaw(turret.yaw * M_GM6020_VOLTAGE_SCALE);
