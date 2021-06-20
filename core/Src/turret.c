@@ -10,9 +10,11 @@
 #include "utils.h"
 #include "referee.h"
 #include "jetson.h"
+#include "BMI088Driver.h"
 
 #include "turret.h"
-
+fp32 gyro[3], accel[3], temp;
+fp32 prevGyroVertical;
 
 PIDProfile yawProfile;
 PIDProfile pitchProfile;
@@ -67,9 +69,12 @@ void turretInit() {
 	oddLoop = false;
 	idleOn = 0;
 	idleDebounce = 0;
+	
+	prevGyroVertical = 0;
 }
 
 void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
+	
 	// can re-initialization
 	if(control_input->key.v & M_F_BITMASK){
 		MX_CAN1_Init();
@@ -91,6 +96,14 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 		pitchSetpoint = M_TURRET_PITCH_UPPER_LIMIT;
 	}*/
 
+	
+	//read IMU
+	/*
+	BMI088_read(gyro, accel, &temp);
+	float gyroMultiplier = 10.0f;
+	yawSetpoint += ((((prevGyroVertical + gyro[2]) / 2.0f) * deltaTime) / 1000.0f) * gyroMultiplier;
+	prevGyroVertical = gyro[2];
+	*/
 	
 	Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile, &yawState, &pitchState);
 
@@ -127,7 +140,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	// Unjam
 	} else if (control_input->key.v & M_R_BITMASK) {
 		feederSpeed = M_M2006_CURRENT_SCALE * 0.05;
-		fric_on((uint16_t) (1050));
+		fric_on((uint16_t) (1100));
 	}else {
 		fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET));
 	}

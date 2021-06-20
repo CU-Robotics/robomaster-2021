@@ -73,6 +73,7 @@ int main(void) {
   MX_TIM8_Init();
   MX_TIM1_Init();
   MX_TIM10_Init();
+	BMI088_init();
   
   // Configure PWM and CAN communication
 	fric_off();
