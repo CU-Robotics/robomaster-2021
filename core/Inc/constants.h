@@ -19,7 +19,7 @@
 #define M_MOUSE_Y_SCALE 3000.0f
 
 // -- PHYSICAL CONSTRAINTS --
-#define M_CHASSIS_MAX_RPM 450.0f							// Chassis motors are capped at this speed
+#define M_CHASSIS_MAX_RPM 300.0f							// Chassis motors are capped at this speed
 #define M_SHOOTER_CURRENT_PERCENT 0.1f                  	// What percent power to run the shooter at. Used to keep the projectile exit speed within regulations.
 #define M_SHOOTER_DELAY 200
 #define M_SHOOTER_UNJAM_PERIOD 200

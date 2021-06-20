@@ -26,9 +26,9 @@ float chassisSpeed = 1.0f;
 
 void chassisInit() {
     // PID Profiles containing tuning parameters.
-    chassisPID_Profile.kP = 0.0003f; // 0.0008f This is overtuned
+    chassisPID_Profile.kP = 0.0005f; // 0.0008f This is overtuned
     chassisPID_Profile.kI = 0.000000f; // 0.000001f This is overtuned
-    chassisPID_Profile.kD = 0.0001f;
+    chassisPID_Profile.kD = 0.0002f;
 
 	frontRightState.lastError = 0;
     backRightState.lastError = 0;
@@ -50,20 +50,28 @@ void chassisLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	// Collect Controller Input
 	xThrottle = control_input->rc.ch[1] * 1000;
 	yThrottle = control_input->rc.ch[0] * 1000;
-	
+
+	relativeAngle = ((4.0f * M_PI) / 3.0f) + (2.0f * M_PI * ((float)get_yaw_gimbal_motor_measure_point()->ecd / M_GM6020_ENCODER_SCALE));
 	if (control_input->key.v & M_W_BITMASK) {
-		xThrottle += 1.0f;//chassisSpeed*cos(relativeAngle);
+		xThrottle += 1.0f;
 	}
 	if (control_input->key.v & M_S_BITMASK) {
-		xThrottle -= 1.0f;//chassisSpeed*cos(relativeAngle);
+		xThrottle -= 1.0f;
 	}
 	if (control_input->key.v & M_A_BITMASK) {
-		yThrottle -= M_HORIZONTAL_MULTIPLIER*1.0f;//chassisSpeed*sin(relativeAngle);
+		yThrottle -= 1.0f;
 	}
 	if (control_input->key.v & M_D_BITMASK) {
-		yThrottle += M_HORIZONTAL_MULTIPLIER*1.0f;//chassisSpeed*sin(relativeAngle);
+		yThrottle += 1.0f;
 
 	}
+	
+	//Rotate to Turret centric
+	float xTemp = xThrottle;
+	float yTemp = yThrottle;
+	
+	yThrottle = -yTemp*cos(-relativeAngle) - xTemp*sin(-relativeAngle);
+	xThrottle = yTemp*sin(-relativeAngle) - xTemp*cos(-relativeAngle);
 	
 	rotation = control_input->rc.ch[4] * 1000;
 	if (control_input->key.v & M_Q_BITMASK) {

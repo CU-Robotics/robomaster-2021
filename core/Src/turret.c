@@ -32,16 +32,19 @@ float tempPitchPosition = 0;
 int flywheelSpeed = 0;
 	
 bool oddLoop;
+bool idleOn;
+
+bool idleDebounce;
 
 void turretInit() {
   // PID Profiles containing tuning parameters.
-  yawProfile.kP = 20.0f / (8 * M_PI);
-  yawProfile.kI = 0.00025f / (8 * M_PI);
-  yawProfile.kD = 25.0f / (8 * M_PI);
+  yawProfile.kP = 5.0f;
+  yawProfile.kI = 0.00001f;
+  yawProfile.kD = 1.0f;
 
-  pitchProfile.kP = 50.0f / (8 * M_PI);
-  pitchProfile.kI = 0.0f / (8 * M_PI);
-  pitchProfile.kD = 5.0f / (8 * M_PI);
+  pitchProfile.kP = 35.0f / (8 * M_PI);
+  pitchProfile.kI = 0.00005f / (8 * M_PI);
+  pitchProfile.kD = 15.0f / (8 * M_PI);
   pitchProfile.kF = 4.20f / (8 * M_PI);
 
 	feederProfile.kP = 0.1f;
@@ -62,10 +65,12 @@ void turretInit() {
 	pitchOffset = pitchPosition;
 	
 	oddLoop = false;
+	idleOn = 0;
+	idleDebounce = 0;
 }
 
 void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
-	//can re-initialization
+	// can re-initialization
 	if(control_input->key.v & M_F_BITMASK){
 		MX_CAN1_Init();
 		MX_CAN2_Init();
@@ -76,7 +81,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	yawSetpoint += control_input->rc.ch[2] * 1000;
 	pitchSetpoint += control_input->rc.ch[3] * 1000;
 
-	yawSetpoint += deltaTime * M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE));
+	yawSetpoint = -deltaTime * M_PI * (control_input->mouse.x / (M_MOUSE_X_SCALE))*9;
 	pitchSetpoint += deltaTime * M_PI * (control_input->mouse.y / (M_MOUSE_Y_SCALE));
 
 	// Apply pitch soft limits
@@ -86,23 +91,30 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 		pitchSetpoint = M_TURRET_PITCH_UPPER_LIMIT;
 	}*/
 
-	// Keep yaw setpoints in -2pi to 2pi range for stability
-	if (yawSetpoint > 2 * M_PI) {
-		yawSetpoint -= 2 * M_PI;
-	} else if (yawSetpoint < -2 * M_PI) {
-		yawSetpoint += 2 * M_PI;
-	}
-
 	
 	Turret turret = calculateTurret(yawSetpoint, pitchSetpoint, yawProfile, pitchProfile, &yawState, &pitchState);
 
 	// Shooter Code
 	float feederSpeed = 0.0f;
 
+	//check for fire toggle
+	if(control_input->key.v == M_C_BITMASK && !idleDebounce){
+		if(!idleOn)
+			idleOn = true;	//toggle idle state
+		else
+			idleOn = false;
+		idleDebounce = true;
+	} else{
+		idleDebounce = false;
+	}
 
 	// Fire
+	//have idle state on if chosen
+	if(idleOn)
+		fric_on((uint16_t) (1030));
+	
 	if (control_input->mouse.press_l) {
-		fric_on((uint16_t) (1023)); //28
+		fric_on((uint16_t) (1030)); //28
 		//fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET + (M_SNAIL_SPEED_SCALE * M_SHOOTER_CURRENT_PERCENT)));
 		feederSpeed = -M_M2006_CURRENT_SCALE * 0.05; // * CONF_SHOOTER_FIRERATE_BURST;
 			if(control_input->key.v & M_V_BITMASK){
@@ -110,12 +122,12 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 	}
 	// Prespin
 	} else if(control_input->mouse.press_r) {
-		fric_on((uint16_t) (1023));
+	fric_on((uint16_t) (1030));
 		//fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET + (M_SNAIL_SPEED_SCALE * M_SHOOTER_CURRENT_PERCENT)));
 	// Unjam
 	} else if (control_input->key.v & M_R_BITMASK) {
 		feederSpeed = M_M2006_CURRENT_SCALE * 0.05;
-		fric_on((uint16_t) (1025));
+		fric_on((uint16_t) (1050));
 	}else {
 		fric_on((uint16_t) (M_SNAIL_SPEED_OFFSET));
 	}
@@ -140,7 +152,7 @@ void turretLoop(const RC_ctrl_t* control_input, int deltaTime) {
 
 Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfile, PIDProfile pitchPIDProfile, PIDState *yawPIDState, PIDState *pitchPIDState) {
   // Captures positions in encoders native format
-  float yawPosition = (get_yaw_gimbal_motor_measure_point()->ecd);
+  float yawPosition = (get_yaw_gimbal_motor_measure_point()->speed_rpm);
   float pitchPosition = (get_pitch_gimbal_motor_measure_point()->ecd);
 
   // Keeps track of true position including reduction
@@ -151,7 +163,7 @@ Turret calculateTurret(float yawAngle, float pitchAngle, PIDProfile yawPIDProfil
 
   // Calculate turret thrusts using PID with input of radians
   Turret turret;
-  turret.yaw = calculatePID_Positional((2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE, yawAngle, yawPIDProfile, yawPIDState);
+  turret.yaw = calculatePID_Speed((2.0f * M_PI * yawPosition) / M_GM6020_ENCODER_SCALE, yawAngle, yawPIDProfile, yawPIDState);
   turret.pitch = calculatePID_SinFeedforward((2.0f * M_PI * pitchPosition) / M_M3508_ENCODER_SCALE, pitchAngle, pitchPIDProfile, pitchPIDState);
 
   return turret;
